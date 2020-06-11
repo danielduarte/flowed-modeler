@@ -82,7 +82,7 @@ export default class TabsProvider {
         },
         extensions: [ 'flowed', 'json' ],
         getComponent(options) {
-          return import('./tabs/bpmn'); // @todo Create flowed tabs
+          return import('./tabs/flowed');
         },
         getInitialContents(options) {
           return flowedDiagram;
