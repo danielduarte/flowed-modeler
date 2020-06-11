@@ -243,7 +243,7 @@ describe('TabsProvider', function() {
     const providerNames = tabsProvider.getProviderNames();
 
     // then
-    expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN' ]);
+    expect(providerNames).to.eql([ 'Flowed', 'BPMN', 'CMMN', 'DMN' ]);
   });
 
 

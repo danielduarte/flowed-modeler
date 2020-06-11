@@ -1562,6 +1562,10 @@ export class App extends PureComponent {
       return;
     }
 
+    if (action === 'create-flowed-diagram') {
+      return this.createDiagram('flowed');
+    }
+
     if (action === 'create-bpmn-diagram') {
       return this.createDiagram('bpmn');
     }
@@ -1820,6 +1824,11 @@ export class App extends PureComponent {
                 <DropdownButton
                   title="Create diagram"
                   items={ [
+                    {
+                      text: 'Create new Flowed diagram',
+                      onClick: this.composeAction('create-flowed-diagram'),
+                      type: 'flowed'
+                    },
                     {
                       text: 'Create new BPMN diagram',
                       onClick: this.composeAction('create-bpmn-diagram'),

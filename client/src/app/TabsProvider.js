@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import flowedDiagram from './tabs/flowed/diagram.bpmn';
 import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
 import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
@@ -69,6 +70,38 @@ export default class TabsProvider {
       empty: {
         getComponent() {
           return EmptyTab;
+        }
+      },
+      flowed: {
+        name: 'Flowed',
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'flowed', 'json' ],
+        getComponent(options) {
+          return import('./tabs/bpmn'); // @todo Create flowed tabs
+        },
+        getInitialContents(options) {
+          return flowedDiagram;
+        },
+        getHelpMenu() {
+          return [{
+            label: 'Flowed Tutorial',
+            action: 'https://github.com/danielduarte/flowed/blob/master/doc/tutorial.md'
+          },
+          {
+            label: 'Flowed Reference',
+            action: 'https://github.com/danielduarte/flowed/blob/master/README.md'
+          }];
+        },
+        getNewFileMenu() {
+          return [{
+            label: 'Flowed Diagram',
+            action: 'create-flowed-diagram'
+          }];
         }
       },
       bpmn: {
