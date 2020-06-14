@@ -1,0 +1,36 @@
+[
+  {
+    "name": "Flowed Echo",
+    "id": "flowedEcho",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [],
+    "scopes": {
+      "flowed:Params": {
+        "properties": [
+          {
+            "label": "In",
+            "type": "String",
+            "binding": {
+              "type": "property",
+              "name": "in"
+            }
+          }
+        ]
+      },
+      "flowed:Results": {
+        "properties": [
+          {
+            "label": "Out",
+            "type": "String",
+            "binding": {
+              "type": "property",
+              "name": "out"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

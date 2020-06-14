@@ -61,9 +61,9 @@ import Metadata from '../../../util/Metadata';
 
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 
-const NAMESPACE_CAMUNDA = {
-  uri: 'http://camunda.org/schema/1.0/bpmn',
-  prefix: 'camunda'
+const NAMESPACE_FLOWED = {
+  uri: 'http://flowed.org/schema/1.0/flowed',
+  prefix: 'flowed'
 };
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
@@ -289,7 +289,7 @@ export class FlowedEditor extends CachedComponent {
       onContentUpdated
     } = this.props;
 
-    const convertedXML = await replaceNamespaceUsages(xml, used, NAMESPACE_CAMUNDA);
+    const convertedXML = await replaceNamespaceUsages(xml, used, NAMESPACE_FLOWED);
 
     onContentUpdated(convertedXML);
 

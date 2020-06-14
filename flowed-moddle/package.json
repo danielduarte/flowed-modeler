@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "min-dash": "^3.0.0"
+  },
+  "devDependencies": {
+    "async": "^2.6.0",
+    "bpmn-moddle": "^6.0.0",
+    "chai": "^4.1.2",
+    "eslint": "^5.16.0",
+    "eslint-plugin-bpmn-io": "^0.8.2",
+    "glob": "^7.1.2",
+    "jsondiffpatch": "^0.2.5",
+    "mocha": "^4.0.1",
+    "npm-run-all": "^4.1.2",
+    "xsd-schema-validator": "^0.5.0"
+  },
+  "name": "flowed-moddle",
+  "scripts": {
+    "all": "run-s lint test",
+    "dev": "npm test -- --watch",
+    "lint": "eslint .",
+    "test": "mocha -r ./test/expect --reporter=spec --recursive test"
+  },
+  "version": "0.1.0"
+}
