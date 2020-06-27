@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "task1": {
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    }
+  }
+}
