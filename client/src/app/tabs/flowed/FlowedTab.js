@@ -10,6 +10,7 @@
 
 import FlowedEditor from './FlowedEditor';
 import XMLEditor from '../xml';
+import JsonEditor from '../json';
 
 import { createTab } from '../EditorTab';
 
@@ -20,11 +21,17 @@ const FlowedTab = createTab('FlowedTab', [
     editor: FlowedEditor,
     defaultName: 'Diagram'
   },
-  { // @todo Create JSONEditor
+  {
     type: 'xml',
     editor: XMLEditor,
     isFallback: true,
     defaultName: 'XML'
+  },
+  {
+    type: 'json',
+    editor: JsonEditor,
+    isFallback: true,
+    defaultName: 'JSON'
   }
 ]);
 

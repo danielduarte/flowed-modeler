@@ -267,7 +267,7 @@ export class MultiSheetTab extends CachedComponent {
       return;
     }
 
-    if (sheet.provider === activeSheet.provider) {
+    if (sheet.provider === activeSheet.provider || activeSheet.provider.type === 'json') {
       return this.setCached({
         activeSheet: sheet
       });
