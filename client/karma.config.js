@@ -145,7 +145,10 @@ module.exports = function(karma) {
           './CodeMirror': 'test/mocks/code-mirror/CodeMirror',
           'sourcemapped-stacktrace': 'test/mocks/sourcemapped-stacktrace'
         }
-      }
+      },
+      node: {
+        fs: 'empty' // Added to include package "xml2json-canonical"
+      },
     }
   });
 };
