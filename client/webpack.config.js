@@ -114,7 +114,9 @@ module.exports = {
   ],
 
   // don't bundle shims for node globals
-  node: false,
+  node: {
+    fs: 'empty' // Added to include package "xml2json-canonical"
+  },
   devServer: {
     writeToDisk: true
   },

@@ -25,6 +25,7 @@ import 'codemirror/addon/dialog/dialog';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/dialog/dialog.css';
+import bpmnToFlowed from '../../util/bpmnToFlowed';
 
 
 /**
@@ -80,8 +81,4 @@ export default function create(options) {
   });
 
   return instance;
-}
-
-function bpmnToFlowed(xml) {
-  return JSON.stringify({ tasks: {} }, null, 2);
 }
