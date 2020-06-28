@@ -1,0 +1,16 @@
+{
+  "tasks": {
+    "t1": {
+      "provides": ["x"],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    },
+    "t2": {
+      "requires": ["x"],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    }
+  }
+}

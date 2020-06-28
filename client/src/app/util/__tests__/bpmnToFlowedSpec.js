@@ -1,11 +1,15 @@
-import bpmnToFlowed from '../bpmnToFlowed';
+const bpmnToFlowed = require('../bpmnToFlowed');
+const assert = require('assert');
 
+const isRunningMocha = process.argv[1] && process.argv[1].endsWith('mocha');
 
 describe('util - bpmnToFlowed', function() {
 
   const testCases = [
     'empty',
     'simple-task',
+    'dependent-tasks',
+    'cycle',
   ];
 
   for (let i = 0; i < testCases.length; i++) {
@@ -13,17 +17,25 @@ describe('util - bpmnToFlowed', function() {
 
     it(`case: ${caseName} process`, async function() {
       const result = generateTestData(caseName);
-      expect(result.converted).to.eql(result.flowed);
+
+      if (isRunningMocha) {
+        assert.deepStrictEqual(result.converted, result.flowed, `Conversion error in case ${caseName}`);
+      } else {
+        expect(result.converted).to.eql(result.flowed);
+      }
     });
-
   }
-
 });
 
 // -- helpers
 
 function generateTestData(caseName) {
-  const bpmn = require(`./bpmn-to-flowed/${caseName}.bpmn`);
+  let bpmn;
+  if (isRunningMocha) {
+    bpmn = require('fs').readFileSync(`./bpmn-to-flowed/${caseName}.bpmn`, 'utf-8');
+  } else {
+    bpmn = require(`./bpmn-to-flowed/${caseName}.bpmn`);
+  }
 
   return {
     bpmn,

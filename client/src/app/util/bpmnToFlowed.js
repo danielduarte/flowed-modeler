@@ -1,7 +1,7 @@
 const { toJson } = require('xml2json-canonical');
 
 
-export default function bpmnToFlowed(xml, options) {
+module.exports = function bpmnToFlowed(xml, options) {
   const opts = {
     stringify: true,
     ...options,
@@ -59,15 +59,46 @@ function rule_definitions(node) {
 function rule_process(node) {
   validateNode(node, { type: 'element', name: 'bpmn:process' });
 
+  const sequences = node
+    .content
+    .filter(child => child.name === 'bpmn:sequenceFlow')
+    .map(seqNode => ({
+      code: seqNode.attrs.id,
+      from: seqNode.attrs.sourceRef,
+      to: seqNode.attrs.targetRef,
+    })).reduce((acc, seq) => {
+      acc.byFrom[seq.from] || (acc.byFrom[seq.from] = []);
+      acc.byFrom[seq.from].push(seq);
+      acc.byTo[seq.to] || (acc.byTo[seq.to] = []);
+      acc.byTo[seq.to].push(seq);
+      return acc;
+    }, {
+      byFrom: {},
+      byTo: {},
+    });
+
   const taskList = node
     .content
     .filter(child => child.name === 'bpmn:task')
-    .map(taskNode => ({
-      code: taskNode.attrs.id,
-      resolver: {
+    .map(taskNode => {
+      const t = {
+        code: taskNode.attrs.id,
+      };
+
+      if (sequences.byTo[t.code]) {
+        t.requires = sequences.byTo[t.code].map(seq => seq.code);
+      }
+
+      if (sequences.byFrom[t.code]) {
+        t.provides = sequences.byFrom[t.code].map(seq => seq.code);
+      }
+
+      t.resolver = {
         name: 'flowed::Noop',
-      },
-    }));
+      };
+
+      return t;
+    });
 
   return taskList;
 }

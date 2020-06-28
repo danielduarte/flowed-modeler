@@ -1,0 +1,37 @@
+{
+  "tasks": {
+    "A": {
+      "requires": [
+        "CtoA"
+      ],
+      "provides": [
+        "AtoB"
+      ],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    },
+    "B": {
+      "requires": [
+        "AtoB"
+      ],
+      "provides": [
+        "BtoC"
+      ],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    },
+    "C": {
+      "requires": [
+        "BtoC"
+      ],
+      "provides": [
+        "CtoA"
+      ],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    }
+  }
+}

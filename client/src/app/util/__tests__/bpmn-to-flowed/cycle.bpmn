@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_17obeup" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.1.0-dev.20200627">
+  <bpmn:process id="Process_0mxv47q" isExecutable="true">
+    <bpmn:task id="A" name="A">
+      <bpmn:incoming>CtoA</bpmn:incoming>
+      <bpmn:outgoing>AtoB</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="B" name="B">
+      <bpmn:incoming>AtoB</bpmn:incoming>
+      <bpmn:outgoing>BtoC</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="C" name="C">
+      <bpmn:incoming>BtoC</bpmn:incoming>
+      <bpmn:outgoing>CtoA</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="AtoB" name="AtoB" sourceRef="A" targetRef="B" />
+    <bpmn:sequenceFlow id="BtoC" name="BtoC" sourceRef="B" targetRef="C" />
+    <bpmn:sequenceFlow id="CtoA" name="CtoA" sourceRef="C" targetRef="A" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0mxv47q">
+      <bpmndi:BPMNEdge id="Flow_0la79vu_di" bpmnElement="AtoB">
+        <di:waypoint x="260" y="210" />
+        <di:waypoint x="370" y="210" />
+        <di:waypoint x="370" y="130" />
+        <di:waypoint x="480" y="130" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="373" y="167" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ydckui_di" bpmnElement="BtoC">
+        <di:waypoint x="530" y="170" />
+        <di:waypoint x="530" y="265" />
+        <di:waypoint x="470" y="265" />
+        <di:waypoint x="470" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="488" y="247" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0drsocd_di" bpmnElement="CtoA">
+        <di:waypoint x="380" y="400" />
+        <di:waypoint x="320" y="400" />
+        <di:waypoint x="320" y="240" />
+        <di:waypoint x="260" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="323" y="317" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0az18nn_di" bpmnElement="A">
+        <dc:Bounds x="160" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1axg66k_di" bpmnElement="B">
+        <dc:Bounds x="480" y="90" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0non3ey_di" bpmnElement="C">
+        <dc:Bounds x="380" y="360" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
