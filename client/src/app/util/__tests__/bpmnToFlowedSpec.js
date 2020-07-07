@@ -10,6 +10,8 @@ describe('util - bpmnToFlowed', function() {
     'simple-task',
     'dependent-tasks',
     'cycle',
+    'reuse-value',
+    'conditional',
   ];
 
   for (let i = 0; i < testCases.length; i++) {

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:flowed="http://flowed.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1w6mvl2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.1.0-dev.20200629">
+  <bpmn:process id="reuse-value-process" isExecutable="true">
+    <bpmn:task id="A" name="A" camunda:modelerTemplate="flowedEcho">
+      <bpmn:extensionElements>
+        <flowed:params inout="" />
+        <flowed:results inout="" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>v1</bpmn:outgoing>
+      <bpmn:outgoing>v2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="B1" name="B1">
+      <bpmn:incoming>v1</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:task id="B2" name="B2">
+      <bpmn:incoming>v2</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="v1" name="v" sourceRef="A" targetRef="B1" valueId="v" />
+    <bpmn:sequenceFlow id="v2" name="v" sourceRef="A" targetRef="B2" valueId="v" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="reuse-value-process">
+      <bpmndi:BPMNEdge id="Flow_10ll8qc_di" bpmnElement="v2">
+        <di:waypoint x="260" y="220" />
+        <di:waypoint x="330" y="220" />
+        <di:waypoint x="330" y="310" />
+        <di:waypoint x="400" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="342" y="262" width="6" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04hdrzk_di" bpmnElement="v1">
+        <di:waypoint x="260" y="220" />
+        <di:waypoint x="330" y="220" />
+        <di:waypoint x="330" y="120" />
+        <di:waypoint x="400" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="342" y="167" width="6" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1nafinz_di" bpmnElement="A">
+        <dc:Bounds x="160" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1c16s6m_di" bpmnElement="B1">
+        <dc:Bounds x="400" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ulbof7_di" bpmnElement="B2">
+        <dc:Bounds x="400" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

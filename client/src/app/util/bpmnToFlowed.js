@@ -16,7 +16,7 @@ module.exports = function bpmnToFlowed(xml, options) {
   } else {
     return spec;
   }
-}
+};
 
 // -- parser rules
 
@@ -62,17 +62,15 @@ function rule_process(node) {
   const sequences = node
     .content
     .filter(child => child.name === 'bpmn:sequenceFlow')
-    .map(seqNode => ({
-      code: seqNode.attrs.id,
-      from: seqNode.attrs.sourceRef,
-      to: seqNode.attrs.targetRef,
-    })).reduce((acc, seq) => {
+    .map(rule_sequenceFlow).reduce((acc, seq) => {
+      acc.byCode[seq.code] = seq;
       acc.byFrom[seq.from] || (acc.byFrom[seq.from] = []);
       acc.byFrom[seq.from].push(seq);
       acc.byTo[seq.to] || (acc.byTo[seq.to] = []);
       acc.byTo[seq.to].push(seq);
       return acc;
     }, {
+      byCode: {},
       byFrom: {},
       byTo: {},
     });
@@ -84,23 +82,78 @@ function rule_process(node) {
       const t = {
         code: taskNode.attrs.id,
       };
-
       if (sequences.byTo[t.code]) {
-        t.requires = sequences.byTo[t.code].map(seq => seq.code);
+        t.requires = [...new Set(sequences.byTo[t.code].map(seq => seq.code))];
       }
-
       if (sequences.byFrom[t.code]) {
-        t.provides = sequences.byFrom[t.code].map(seq => seq.code);
+        t.provides = [...new Set(sequences.byFrom[t.code].map(seq => seq.code))];
       }
-
       t.resolver = {
         name: 'flowed::Noop',
       };
+      return t;
+    });
+
+  const condTaskList = node
+    .content
+    .filter(child => child.name === 'bpmn:exclusiveGateway')
+    .map(taskNode => {
+      const t = {
+        code: taskNode.attrs.id,
+      };
+      if (sequences.byTo[t.code]) {
+        t.requires = [...new Set(sequences.byTo[t.code].map(seq => seq.code))];
+      }
+      if (sequences.byFrom[t.code]) {
+        t.provides = [...new Set(sequences.byFrom[t.code].map(seq => seq.code))];
+      }
+      t.resolver = {
+        name: 'flowed::Conditional',
+      };
+      if (t.requires.length > 0) {
+        t.resolver.params = {
+          condition: t.requires[0],
+        };
+      }
+
+      const trueProvs = t.provides.filter(prov => sequences.byCode[prov].cond === 'true');
+      const falseProvs = t.provides.filter(prov => sequences.byCode[prov].cond === 'false');
+      if (trueProvs.length > 0 || falseProvs.length > 0) {
+        t.resolver.results = {};
+        if (trueProvs.length > 0) {
+          t.resolver.results.onTrue = trueProvs[0];
+        }
+        if (falseProvs.length > 0) {
+          t.resolver.results.onFalse = falseProvs[0];
+        }
+      }
 
       return t;
     });
 
-  return taskList;
+  return [...taskList, ...condTaskList];
+}
+
+function rule_sequenceFlow(node) {
+  validateNode(node, { type: 'element', name: 'bpmn:sequenceFlow' });
+
+  const seq = {
+    code: typeof node.attrs.valueId === 'undefined' ? node.attrs.id : node.attrs.valueId,
+    from: node.attrs.sourceRef,
+    to: node.attrs.targetRef,
+  };
+
+  if (node.content.length > 0) {
+    seq.cond = rule_conditionExpression(node.content[0]);
+  }
+
+  return seq;
+}
+
+function rule_conditionExpression(node) {
+  validateNode(node, { type: 'element', name: 'bpmn:conditionExpression' });
+
+  return node.content[0].content;
 }
 
 function validateNode(node, expectedFields) {

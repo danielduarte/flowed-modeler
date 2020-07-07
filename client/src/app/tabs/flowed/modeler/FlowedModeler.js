@@ -32,7 +32,7 @@ import flowedModdlePackage from '../../../../../../flowed-moddle/resources/flowe
 import flowedModdleExtension from '../../../../../../flowed-moddle/lib';
 
 import propertiesPanelModule from 'bpmn-js-properties-panel';
-import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
+import propertiesProviderModule from '../../../../../../flowed-js-properties-panel/lib/provider/camunda';
 
 import disableCollapsedSubprocessModule from 'bpmn-js-disable-collapsed-subprocess';
 

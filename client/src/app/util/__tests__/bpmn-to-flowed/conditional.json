@@ -1,0 +1,42 @@
+{
+  "tasks": {
+    "GenerateCond": {
+      "provides": [
+        "cond"
+      ],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    },
+    "If": {
+      "requires": ["cond"],
+      "provides": ["trueVal", "falseVal"],
+      "resolver": {
+        "name": "flowed::Conditional",
+        "params": {
+          "condition": "cond"
+        },
+        "results": {
+          "onTrue": "trueVal",
+          "onFalse": "falseVal"
+        }
+      }
+    },
+    "IfTrue": {
+      "requires": [
+        "trueVal"
+      ],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    },
+    "IfFalse": {
+      "requires": [
+        "falseVal"
+      ],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    }
+  }
+}

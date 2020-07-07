@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1yqrgxi" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.1.0-dev.20200707">
+  <bpmn:process id="Process_1ktwk43" isExecutable="true">
+    <bpmn:task id="GenerateCond" name="Generate Cond">
+      <bpmn:outgoing>cond</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="If" name="If">
+      <bpmn:incoming>cond</bpmn:incoming>
+      <bpmn:outgoing>trueVal</bpmn:outgoing>
+      <bpmn:outgoing>falseVal</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="cond" name="cond" sourceRef="GenerateCond" targetRef="If" />
+    <bpmn:task id="IfTrue" name="If True">
+      <bpmn:incoming>trueVal</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="trueVal" name="trueVal" sourceRef="If" targetRef="IfTrue">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:task id="IfFalse" name="If False">
+      <bpmn:incoming>falseVal</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="falseVal" name="falseVal" sourceRef="If" targetRef="IfFalse">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1ktwk43">
+      <bpmndi:BPMNEdge id="Flow_1n6qd4l_di" bpmnElement="falseVal">
+        <di:waypoint x="340" y="145" />
+        <di:waypoint x="340" y="230" />
+        <di:waypoint x="420" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="350" y="213" width="39" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1erbbap_di" bpmnElement="trueVal">
+        <di:waypoint x="365" y="120" />
+        <di:waypoint x="420" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="375" y="102" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eru160_di" bpmnElement="cond">
+        <di:waypoint x="260" y="120" />
+        <di:waypoint x="315" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="276" y="102" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0llq50e_di" bpmnElement="GenerateCond">
+        <dc:Bounds x="160" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0pcje2a_di" bpmnElement="If" isMarkerVisible="true">
+        <dc:Bounds x="315" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="336" y="73" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01nwctp_di" bpmnElement="IfTrue">
+        <dc:Bounds x="420" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1a70a30_di" bpmnElement="IfFalse">
+        <dc:Bounds x="420" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

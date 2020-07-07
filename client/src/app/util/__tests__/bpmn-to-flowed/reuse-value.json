@@ -1,0 +1,22 @@
+{
+  "tasks": {
+    "A": {
+      "provides": ["v"],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    },
+    "B1": {
+      "requires": ["v"],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    },
+    "B2": {
+      "requires": ["v"],
+      "resolver": {
+        "name": "flowed::Noop"
+      }
+    }
+  }
+}

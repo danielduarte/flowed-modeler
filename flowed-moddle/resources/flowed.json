@@ -58,7 +58,7 @@
     {
       "name": "camunda:InOutBinding",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "isAbstract": true,
       "properties": [
@@ -219,7 +219,7 @@
     {
       "name": "camunda:PotentialStarter",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "properties": [
         {
@@ -558,7 +558,7 @@
     {
       "name": "camunda:Properties",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "meta": {
         "allowedIn": [
@@ -576,7 +576,7 @@
     {
       "name": "Property",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "properties": [
         {
@@ -599,7 +599,7 @@
     {
       "name": "camunda:Connector",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "meta": {
         "allowedIn": [
@@ -620,7 +620,7 @@
     {
       "name": "camunda:InputOutput",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "meta": {
         "allowedIn": [
@@ -766,7 +766,7 @@
     {
       "name": "camunda:Field",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "meta": {
         "allowedIn": [
@@ -833,7 +833,7 @@
     {
       "name": "camunda:FailedJobRetryTimeCycle",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "meta": {
         "allowedIn": [
@@ -852,7 +852,7 @@
     {
       "name": "camunda:ExecutionListener",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "meta": {
         "allowedIn": [
@@ -913,7 +913,7 @@
     {
       "name": "camunda:TaskListener",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "meta": {
         "allowedIn": [
@@ -965,7 +965,7 @@
     {
       "name": "camunda:FormProperty",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "meta": {
         "allowedIn": [
@@ -1034,7 +1034,7 @@
     {
       "name": "camunda:FormData",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "meta": {
         "allowedIn": [
@@ -1058,7 +1058,7 @@
     {
       "name": "camunda:FormField",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "properties": [
         {
@@ -1104,7 +1104,7 @@
     {
       "name": "camunda:Validation",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "properties": [
         {
@@ -1117,7 +1117,7 @@
     {
       "name": "camunda:Constraint",
       "superClass": [
-        "camunda:Element"
+        "Element"
       ],
       "properties": [
         {

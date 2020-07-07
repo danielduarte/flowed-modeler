@@ -1,0 +1,99 @@
+{
+  "_args": [
+    [
+      "bpmn-js-properties-panel@0.33.2",
+      "/Users/dduarte/Documents/www/danielduarte/camunda-modeler/client"
+    ]
+  ],
+  "_from": "bpmn-js-properties-panel@0.33.2",
+  "_id": "bpmn-js-properties-panel@0.33.2",
+  "_inBundle": false,
+  "_integrity": "sha512-+13NONRG1sJgcNgsN5ZWYbyAA1LYO1eOvTRx62IfjieMzDhDLRCmP4YLkPIWG4NhKdAIRfUf9/JxI1uwZd5rhQ==",
+  "_location": "/bpmn-js-properties-panel",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "bpmn-js-properties-panel@0.33.2",
+    "name": "bpmn-js-properties-panel",
+    "escapedName": "bpmn-js-properties-panel",
+    "rawSpec": "0.33.2",
+    "saveSpec": null,
+    "fetchSpec": "0.33.2"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bpmn-js-properties-panel/-/bpmn-js-properties-panel-0.33.2.tgz",
+  "_spec": "0.33.2",
+  "_where": "/Users/dduarte/Documents/www/danielduarte/camunda-modeler/client",
+  "author": {
+    "name": "Nico Rehwaldt",
+    "url": "https://github.com/nikku"
+  },
+  "bugs": {
+    "url": "https://github.com/bpmn-io/bpmn-js-properties-panel/issues"
+  },
+  "dependencies": {
+    "ids": "^1.0.0",
+    "inherits": "^2.0.1",
+    "lodash": "^4.17.15",
+    "min-dom": "^3.1.1",
+    "scroll-tabs": "^1.0.1",
+    "selection-update": "^0.1.2"
+  },
+  "description": "A simple properties panel for bpmn-js",
+  "devDependencies": {
+    "bpmn-font": "^0.9.0",
+    "bpmn-js": "^5.1.2",
+    "bpmn-moddle": "^5.1.6",
+    "camunda-bpmn-moddle": "^4.3.0",
+    "chai": "^4.1.2",
+    "diagram-js": "^5.1.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-bpmn-io": "^0.6.0",
+    "karma": "^4.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-mocha": "~1.2.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-sinon-chai": "^2.0.2",
+    "karma-spec-reporter": "0.0.31",
+    "karma-webpack": "^4.0.2",
+    "less": "^3.8.0",
+    "mocha": "^5.2.0",
+    "mocha-test-container-support": "0.2.0",
+    "npm-run-all": "^4.1.5",
+    "puppeteer": "^1.18.0",
+    "raw-loader": "^0.5.1",
+    "sinon": "^4.5.0",
+    "sinon-chai": "^3.2.0",
+    "webpack": "^4.16.2"
+  },
+  "homepage": "https://github.com/bpmn-io/bpmn-js-properties-panel#readme",
+  "keywords": [
+    "bpmn-js",
+    "properties",
+    "properties-panel"
+  ],
+  "license": "MIT",
+  "name": "bpmn-js-properties-panel",
+  "peerDependencies": {
+    "bpmn-js": "^3.x || ^4.x || ^5.x || ^6.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bpmn-io/bpmn-js-properties-panel.git"
+  },
+  "scripts": {
+    "all": "run-s lint test build",
+    "build": "run-s build:*",
+    "build:less": "lessc --include-path=node_modules styles/properties.less dist/assets/bpmn-js-properties-panel.css",
+    "dev": "npm test -- --no-single-run --auto-watch",
+    "lint": "eslint .",
+    "prepublishOnly": "run-s build",
+    "test": "karma start"
+  },
+  "version": "0.33.2"
+}
