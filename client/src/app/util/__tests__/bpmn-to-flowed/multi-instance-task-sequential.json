@@ -1,0 +1,17 @@
+{
+  "tasks": {
+    "aTask": {
+      "resolver": {
+        "name": "flowed::ArrayMap",
+        "params": {
+          "resolver": "flowed::Noop",
+          "spec": {},
+          "params": {},
+          "automapParams": true,
+          "automapResults": true,
+          "parallel": false
+        }
+      }
+    }
+  }
+}

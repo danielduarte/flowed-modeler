@@ -78,58 +78,12 @@ function rule_process(node) {
   const taskList = node
     .content
     .filter(child => child.name === 'bpmn:task')
-    .map(taskNode => {
-      const t = {
-        code: taskNode.attrs.id,
-      };
-      if (sequences.byTo[t.code]) {
-        t.requires = [...new Set(sequences.byTo[t.code].map(seq => seq.code))];
-      }
-      if (sequences.byFrom[t.code]) {
-        t.provides = [...new Set(sequences.byFrom[t.code].map(seq => seq.code))];
-      }
-      t.resolver = {
-        name: 'flowed::Noop',
-      };
-      return t;
-    });
+    .map(node => rule_task(node, sequences));
 
   const condTaskList = node
     .content
     .filter(child => child.name === 'bpmn:exclusiveGateway')
-    .map(taskNode => {
-      const t = {
-        code: taskNode.attrs.id,
-      };
-      if (sequences.byTo[t.code]) {
-        t.requires = [...new Set(sequences.byTo[t.code].map(seq => seq.code))];
-      }
-      if (sequences.byFrom[t.code]) {
-        t.provides = [...new Set(sequences.byFrom[t.code].map(seq => seq.code))];
-      }
-      t.resolver = {
-        name: 'flowed::Conditional',
-      };
-      if (t.requires.length > 0) {
-        t.resolver.params = {
-          condition: t.requires[0],
-        };
-      }
-
-      const trueProvs = t.provides.filter(prov => sequences.byCode[prov].cond === 'true');
-      const falseProvs = t.provides.filter(prov => sequences.byCode[prov].cond === 'false');
-      if (trueProvs.length > 0 || falseProvs.length > 0) {
-        t.resolver.results = {};
-        if (trueProvs.length > 0) {
-          t.resolver.results.onTrue = trueProvs[0];
-        }
-        if (falseProvs.length > 0) {
-          t.resolver.results.onFalse = falseProvs[0];
-        }
-      }
-
-      return t;
-    });
+    .map(node => rule_exclusiveGateway(node, sequences));
 
   return [...taskList, ...condTaskList];
 }
@@ -154,6 +108,85 @@ function rule_conditionExpression(node) {
   validateNode(node, { type: 'element', name: 'bpmn:conditionExpression' });
 
   return node.content[0].content;
+}
+
+function rule_task(node, sequences) {
+  validateNode(node, { type: 'element', name: 'bpmn:task' });
+
+  const task = {
+    code: node.attrs.id,
+  };
+
+  if (sequences.byTo[task.code]) {
+    task.requires = [...new Set(sequences.byTo[task.code].map(seq => seq.code))];
+  }
+
+  if (sequences.byFrom[task.code]) {
+    task.provides = [...new Set(sequences.byFrom[task.code].map(seq => seq.code))];
+  }
+
+  task.resolver = {
+    name: 'flowed::Noop',
+  };
+
+  const loopNodes = node.content.filter(child => child.name === 'bpmn:multiInstanceLoopCharacteristics');
+  if (loopNodes.length > 0) {
+    const loop = loopNodes[0];
+
+    task.resolver= {
+      name: 'flowed::ArrayMap',
+      params: {
+        resolver: 'flowed::Noop',
+        spec: {},
+        params: {},
+        automapParams: true,
+        automapResults: true,
+        parallel: !(loop.attrs && loop.attrs.isSequential === 'true'),
+      }
+    };
+  }
+
+  return task;
+}
+
+function rule_exclusiveGateway(node, sequences) {
+  validateNode(node, { type: 'element', name: 'bpmn:exclusiveGateway' });
+
+  const task = {
+    code: node.attrs.id,
+  };
+
+  if (sequences.byTo[task.code]) {
+    task.requires = [...new Set(sequences.byTo[task.code].map(seq => seq.code))];
+  }
+
+  if (sequences.byFrom[task.code]) {
+    task.provides = [...new Set(sequences.byFrom[task.code].map(seq => seq.code))];
+  }
+
+  task.resolver = {
+    name: 'flowed::Conditional',
+  };
+
+  if (task.requires.length > 0) {
+    task.resolver.params = {
+      condition: task.requires[0],
+    };
+  }
+
+  const trueProvs = task.provides.filter(prov => sequences.byCode[prov].cond === 'true');
+  const falseProvs = task.provides.filter(prov => sequences.byCode[prov].cond === 'false');
+  if (trueProvs.length > 0 || falseProvs.length > 0) {
+    task.resolver.results = {};
+    if (trueProvs.length > 0) {
+      task.resolver.results.onTrue = trueProvs[0];
+    }
+    if (falseProvs.length > 0) {
+      task.resolver.results.onFalse = falseProvs[0];
+    }
+  }
+
+  return task;
 }
 
 function validateNode(node, expectedFields) {

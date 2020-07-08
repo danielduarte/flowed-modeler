@@ -12,6 +12,8 @@ describe('util - bpmnToFlowed', function() {
     'cycle',
     'reuse-value',
     'conditional',
+    'multi-instance-task-parallel',
+    'multi-instance-task-sequential',
   ];
 
   for (let i = 0; i < testCases.length; i++) {
