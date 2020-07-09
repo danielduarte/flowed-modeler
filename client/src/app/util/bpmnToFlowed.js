@@ -85,7 +85,12 @@ function rule_process(node) {
     .filter(child => child.name === 'bpmn:exclusiveGateway')
     .map(node => rule_exclusiveGateway(node, sequences));
 
-  return [...taskList, ...condTaskList];
+  const subflowTaskList = node
+    .content
+    .filter(child => child.name === 'bpmn:subProcess')
+    .map(node => rule_subProcess(node, sequences));
+
+  return [...taskList, ...condTaskList, ...subflowTaskList];
 }
 
 function rule_sequenceFlow(node) {
@@ -158,6 +163,8 @@ function rule_exclusiveGateway(node, sequences) {
 
   if (sequences.byTo[task.code]) {
     task.requires = [...new Set(sequences.byTo[task.code].map(seq => seq.code))];
+
+
   }
 
   if (sequences.byFrom[task.code]) {
@@ -168,23 +175,53 @@ function rule_exclusiveGateway(node, sequences) {
     name: 'flowed::Conditional',
   };
 
-  if (task.requires.length > 0) {
+  if (task.requires && task.requires.length > 0) {
     task.resolver.params = {
       condition: task.requires[0],
     };
   }
 
-  const trueProvs = task.provides.filter(prov => sequences.byCode[prov].cond === 'true');
-  const falseProvs = task.provides.filter(prov => sequences.byCode[prov].cond === 'false');
-  if (trueProvs.length > 0 || falseProvs.length > 0) {
-    task.resolver.results = {};
-    if (trueProvs.length > 0) {
-      task.resolver.results.onTrue = trueProvs[0];
-    }
-    if (falseProvs.length > 0) {
-      task.resolver.results.onFalse = falseProvs[0];
+  if (task.provides) {
+    const trueProvs = task.provides.filter(prov => sequences.byCode[prov].cond === 'true');
+    const falseProvs = task.provides.filter(prov => sequences.byCode[prov].cond === 'false');
+    if (trueProvs.length > 0 || falseProvs.length > 0) {
+      task.resolver.results = {};
+      if (trueProvs.length > 0) {
+        task.resolver.results.onTrue = trueProvs[0];
+      }
+      if (falseProvs.length > 0) {
+        task.resolver.results.onFalse = falseProvs[0];
+      }
     }
   }
+
+  return task;
+}
+
+function rule_subProcess(node, sequences) {
+  validateNode(node, { type: 'element', name: 'bpmn:subProcess' });
+
+  const task = {
+    code: node.attrs.id,
+  };
+
+  if (sequences.byTo[task.code]) {
+    task.requires = [...new Set(sequences.byTo[task.code].map(seq => seq.code))];
+  }
+
+  if (sequences.byFrom[task.code]) {
+    task.provides = [...new Set(sequences.byFrom[task.code].map(seq => seq.code))];
+  }
+
+  task.resolver= {
+    name: 'flowed::SubFlow',
+    params: {
+      flowSpec: {},
+      flowParams: {},
+      flowExpectedResults: [],
+      flowResolvers: {},
+    }
+  };
 
   return task;
 }

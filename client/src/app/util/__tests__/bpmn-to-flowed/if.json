@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "if": {
+      "resolver": {
+        "name": "flowed::Conditional"
+      }
+    }
+  }
+}

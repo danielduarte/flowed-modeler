@@ -8,12 +8,14 @@ describe('util - bpmnToFlowed', function() {
   const testCases = [
     'empty',
     'simple-task',
+    'if',
     'dependent-tasks',
     'cycle',
     'reuse-value',
     'conditional',
     'multi-instance-task-parallel',
     'multi-instance-task-sequential',
+    'subflow-empty'
   ];
 
   for (let i = 0; i < testCases.length; i++) {
