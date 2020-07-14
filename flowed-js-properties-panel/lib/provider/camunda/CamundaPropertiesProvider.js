@@ -13,7 +13,6 @@ var is = require('bpmn-js/lib/util/ModelUtil').is;
 var processProps = require('../bpmn/parts/ProcessProps'),
     eventProps = require('../bpmn/parts/EventProps'),
     linkProps = require('../bpmn/parts/LinkProps'),
-    documentationProps = require('../bpmn/parts/DocumentationProps'),
     idProps = require('../bpmn/parts/IdProps'),
     nameProps = require('../bpmn/parts/NameProps'),
     executableProps = require('../bpmn/parts/ExecutableProps');
@@ -21,7 +20,6 @@ var processProps = require('../bpmn/parts/ProcessProps'),
 // camunda properties
 var serviceTaskDelegateProps = require('./parts/ServiceTaskDelegateProps'),
     userTaskProps = require('./parts/UserTaskProps'),
-    asynchronousContinuationProps = require('./parts/AsynchronousContinuationProps'),
     callActivityProps = require('./parts/CallActivityProps'),
     multiInstanceProps = require('./parts/MultiInstanceLoopProps'),
     conditionalProps = require('./parts/ConditionalProps'),
@@ -47,9 +45,6 @@ var inputOutput = require('./parts/InputOutputProps'),
 var connectorDetails = require('./parts/ConnectorDetailProps'),
     connectorInputOutput = require('./parts/ConnectorInputOutputProps'),
     connectorInputOutputParameter = require('./parts/ConnectorInputOutputParameterProps');
-
-// properties
-var properties = require('./parts/PropertiesProps');
 
 // job configuration
 var jobConfiguration = require('./parts/JobConfigurationProps');
@@ -199,13 +194,6 @@ function createGeneralTabGroups(
   };
   multiInstanceProps(multiInstanceGroup, element, bpmnFactory, translate);
 
-  var asyncGroup = {
-    id : 'async',
-    label: translate('Asynchronous Continuations'),
-    entries : []
-  };
-  asynchronousContinuationProps(asyncGroup, element, bpmnFactory, translate);
-
   var jobConfigurationGroup = {
     id : 'jobConfiguration',
     label : translate('Job Configuration'),
@@ -244,13 +232,6 @@ function createGeneralTabGroups(
   };
   tasklist(tasklistGroup, element, bpmnFactory, translate);
 
-  var documentationGroup = {
-    id: 'documentation',
-    label: translate('Documentation'),
-    entries: []
-  };
-  documentationProps(documentationGroup, element, bpmnFactory, translate);
-
   var groups = [];
   groups.push(generalGroup);
   customFieldsGroups.forEach(function(group) {
@@ -259,12 +240,10 @@ function createGeneralTabGroups(
   groups.push(detailsGroup);
   groups.push(externalTaskGroup);
   groups.push(multiInstanceGroup);
-  groups.push(asyncGroup);
   groups.push(jobConfigurationGroup);
   groups.push(candidateStarterGroup);
   groups.push(historyTimeToLiveGroup);
   groups.push(tasklistGroup);
-  groups.push(documentationGroup);
 
   return groups;
 }
@@ -292,48 +271,6 @@ function createFormsTabGroups(element, bpmnFactory, elementRegistry, translate) 
 
   return [
     formGroup
-  ];
-}
-
-function createListenersTabGroups(element, bpmnFactory, elementRegistry, translate) {
-
-  var listenersGroup = {
-    id : 'listeners',
-    label: translate('Listeners'),
-    entries: []
-  };
-
-  var options = listenerProps(listenersGroup, element, bpmnFactory, translate);
-
-  var listenerDetailsGroup = {
-    id: 'listener-details',
-    entries: [],
-    enabled: function(element, node) {
-      return options.getSelectedListener(element, node);
-    },
-    label: function(element, node) {
-      var param = options.getSelectedListener(element, node);
-      return getListenerLabel(param, translate);
-    }
-  };
-
-  listenerDetails(listenerDetailsGroup, element, bpmnFactory, options, translate);
-
-  var listenerFieldsGroup = {
-    id: 'listener-fields',
-    label: translate('Field Injection'),
-    entries: [],
-    enabled: function(element, node) {
-      return options.getSelectedListener(element, node);
-    }
-  };
-
-  listenerFields(listenerFieldsGroup, element, bpmnFactory, options, translate);
-
-  return [
-    listenersGroup,
-    listenerDetailsGroup,
-    listenerFieldsGroup
   ];
 }
 
@@ -420,19 +357,6 @@ function createFieldInjectionsTabGroups(element, bpmnFactory, elementRegistry, t
   ];
 }
 
-function createExtensionElementsGroups(element, bpmnFactory, elementRegistry, translate) {
-
-  var propertiesGroup = {
-    id : 'extensionElements-properties',
-    label: translate('Properties'),
-    entries: []
-  };
-  properties(propertiesGroup, element, bpmnFactory, translate);
-
-  return [
-    propertiesGroup
-  ];
-}
 
 // Camunda Properties Provider /////////////////////////////////////
 
@@ -506,7 +430,6 @@ function CamundaPropertiesProvider(
       fieldInjectionsTab,
     ];
   };
-
 }
 
 CamundaPropertiesProvider.$inject = [
