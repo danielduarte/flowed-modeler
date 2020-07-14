@@ -30,6 +30,7 @@ import signavioCompatModule from 'bpmn-js-signavio-compat';
 
 import flowedModdlePackage from '../../../../../../flowed-moddle/resources/flowed';
 import flowedModdleExtension from '../../../../../../flowed-moddle/lib';
+import flowedBpmnFactory from '../../../../../custom/flowed-bpmn-factory';
 
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from '../../../../../../flowed-js-properties-panel/lib/provider/camunda';
@@ -79,7 +80,8 @@ const extensionModules = [
   propertiesPanelModule,
   propertiesProviderModule,
   signavioCompatModule,
-  disableCollapsedSubprocessModule
+  disableCollapsedSubprocessModule,
+  flowedBpmnFactory,
 ];
 
 FlowedModeler.prototype._modules = [
