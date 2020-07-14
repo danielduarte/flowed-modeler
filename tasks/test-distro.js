@@ -60,7 +60,7 @@ const expectedFiles = {
       name: 'camunda-modeler-${version}-win-${arch}.zip',
       archs,
       contents: [
-        'Camunda Modeler.exe',
+        'Flowed Modeler.exe',
         'support/register_fileassoc.bat',
         'LICENSE.camunda-modeler.txt',
         'THIRD_PARTY_NOTICES.camunda-modeler.txt',
@@ -85,7 +85,7 @@ const expectedFiles = {
       name: 'camunda-modeler-${version}-mac.zip',
       archs: [ 'x64' ],
       contents: [
-        'Camunda Modeler.app/Contents/Info.plist'
+        'Flowed Modeler.app/Contents/Info.plist'
       ]
     }
   ]
