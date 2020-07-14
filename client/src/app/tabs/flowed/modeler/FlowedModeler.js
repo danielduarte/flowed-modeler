@@ -28,12 +28,12 @@ import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
 import signavioCompatModule from 'bpmn-js-signavio-compat';
 
-import flowedModdlePackage from '../../../../../../flowed-moddle/resources/flowed';
-import flowedModdleExtension from '../../../../../../flowed-moddle/lib';
+import flowedModdlePackage from '../../../../../custom/flowed-moddle/resources/flowed';
+import flowedModdleExtension from '../../../../../custom/flowed-moddle/lib';
 import flowedBpmnFactory from '../../../../../custom/flowed-bpmn-factory';
 
 import propertiesPanelModule from 'bpmn-js-properties-panel';
-import propertiesProviderModule from '../../../../../../flowed-js-properties-panel/lib/provider/camunda';
+import propertiesProviderModule from '../../../../../custom/flowed-js-properties-panel/lib/provider/camunda';
 
 import disableCollapsedSubprocessModule from 'bpmn-js-disable-collapsed-subprocess';
 
