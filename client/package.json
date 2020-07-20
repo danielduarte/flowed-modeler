@@ -1,7 +1,7 @@
 {
-  "name": "camunda-modeler-client",
-  "version": "4.0.0",
-  "description": "Camunda Modeler client application",
+  "name": "flowed-modeler-client",
+  "version": "0.1.0",
+  "description": "Flowed Modeler client application",
   "private": true,
   "license": "MIT",
   "main": "src/index.js",

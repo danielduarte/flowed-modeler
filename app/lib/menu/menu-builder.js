@@ -521,11 +521,7 @@ class MenuBuilder {
     const topPart = [
       {
         label: 'Documentation',
-        click: () => browserOpen('https://docs.camunda.org/manual/latest/modeler/camunda-modeler')
-      },
-      {
-        label: 'User Forum',
-        click: () => browserOpen('https://forum.camunda.org/c/modeler')
+        click: () => browserOpen('https://github.com/danielduarte/flowed-modeler/blob/master/README.md')
       },
       {
         label: 'Keyboard Shortcuts',
@@ -534,18 +530,14 @@ class MenuBuilder {
       getSeparatorTemplate(),
       {
         label: 'Search Feature Requests',
-        click: () => browserOpen('https://github.com/camunda/camunda-modeler/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement')
+        click: () => browserOpen('https://github.com/danielduarte/flowed-modeler/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement')
       },
       {
         label: 'Report Issue',
-        click: () => browserOpen('https://github.com/camunda/camunda-modeler/issues/new/choose')
+        click: () => browserOpen('https://github.com/danielduarte/flowed-modeler/issues/new/choose')
       },
       ... (app.flags && !app.flags.get('disable-remote-interaction')) ? [
         getSeparatorTemplate(),
-        {
-          label: 'Privacy Preferences',
-          click: () => app.emit('menu:action', 'emit-event', { type: 'show-privacy-preferences' })
-        },
       ] : [],
       getSeparatorTemplate()
     ];

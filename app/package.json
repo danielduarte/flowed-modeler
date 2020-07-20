@@ -1,13 +1,13 @@
 {
-  "name": "camunda-modeler",
-  "version": "4.0.0",
-  "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
+  "name": "flowed-modeler",
+  "version": "0.1.0",
+  "description": "Flowed Modeler, based on Camunda Modeler and bpmn.io",
   "private": true,
   "main": "prod.js",
   "author": {
-    "name": "Camunda Services GmbH",
-    "email": "info@camunda.com",
-    "url": "https://camunda.com"
+    "name": "Flowed",
+    "email": "danieldd.ar@gmail.com",
+    "url": "https://danielduarte.github.io/flowed"
   },
   "license": "MIT",
   "dependencies": {

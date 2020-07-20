@@ -1,8 +1,8 @@
-# Camunda Modeler
+# Flowed Modeler
 
 [![Build Status](https://travis-ci.org/camunda/camunda-modeler.svg?branch=develop)](https://travis-ci.org/camunda/camunda-modeler)
 
-An integrated modeling solution for BPMN, DMN and CMMN based on [bpmn.io](http://bpmn.io).
+An integrated modeling solution for Flowed, based on [Camunda Modeler](https://camunda.com/products/modeler/) and [bpmn.io](http://bpmn.io).
 
 ![Camunda Modeler](docs/screenshot.png)
 
@@ -45,5 +45,7 @@ npm run dev
 ## License
 
 MIT
+
+Uses [camunda-modeler](https://github.com/camunda/camunda-modeler), licensed under the [MIT license](https://github.com/camunda/camunda-modeler/blob/develop/LICENSE).
 
 Uses [bpmn-js](https://github.com/bpmn-io/bpmn-js), [dmn-js](https://github.com/bpmn-io/dmn-js), and [cmmn-js](https://github.com/bpmn-io/cmmn-js), licensed under the [bpmn.io license](http://bpmn.io/license).

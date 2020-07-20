@@ -9,13 +9,15 @@
  */
 
 import CamundaPlugin from './camunda-plugin';
-import PrivacyPreferences from './privacy-preferences';
+
+// import PrivacyPreferences from './privacy-preferences';  // Do not use privacy settings for now
 import UpdateChecks from './update-checks';
 import ErrorTracking from './error-tracking';
 
 export default [
   CamundaPlugin,
-  PrivacyPreferences,
+
+  // PrivacyPreferences, // Do not use privacy settings for now
   UpdateChecks,
   ErrorTracking
 ];

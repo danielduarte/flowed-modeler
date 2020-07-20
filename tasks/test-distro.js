@@ -57,7 +57,7 @@ const platforms = [
 const expectedFiles = {
   win: [
     {
-      name: 'camunda-modeler-${version}-win-${arch}.zip',
+      name: 'flowed-modeler-${version}-win-${arch}.zip',
       archs,
       contents: [
         'Flowed Modeler.exe',
@@ -70,7 +70,7 @@ const expectedFiles = {
   ],
   linux: [
     {
-      name: 'camunda-modeler-${version}-linux-${arch}.tar.gz',
+      name: 'flowed-modeler-${version}-linux-${arch}.tar.gz',
       archs: [ 'x64' ],
       contents: [
         'camunda-modeler-${version}-linux-${arch}/camunda-modeler',
@@ -80,9 +80,9 @@ const expectedFiles = {
     }
   ],
   mac: [
-    'camunda-modeler-${version}-mac.dmg',
+    'flowed-modeler-${version}-mac.dmg',
     {
-      name: 'camunda-modeler-${version}-mac.zip',
+      name: 'flowed-modeler-${version}-mac.zip',
       archs: [ 'x64' ],
       contents: [
         'Flowed Modeler.app/Contents/Info.plist'
