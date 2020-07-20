@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:flowed="http://flowed.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1w6mvl2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.1.0-dev.20200629">
   <bpmn:process id="reuse-value-process" isExecutable="true">
-    <bpmn:task id="A" name="A" camunda:modelerTemplate="flowedEcho">
-      <bpmn:extensionElements>
-        <flowed:params inout="" />
-        <flowed:results inout="" />
-      </bpmn:extensionElements>
+    <bpmn:task id="A" name="A">
       <bpmn:outgoing>v1</bpmn:outgoing>
       <bpmn:outgoing>v2</bpmn:outgoing>
     </bpmn:task>

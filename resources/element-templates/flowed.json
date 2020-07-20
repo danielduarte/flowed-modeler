@@ -1,7 +1,7 @@
 [
   {
     "name": "Flowed Echo",
-    "id": "flowedEcho",
+    "id": "flowed::Echo",
     "appliesTo": [
       "bpmn:Task"
     ],

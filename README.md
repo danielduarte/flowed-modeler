@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/camunda/camunda-modeler.svg?branch=develop)](https://travis-ci.org/camunda/camunda-modeler)
 
-An integrated modeling solution for Flowed, based on [Camunda Modeler](https://camunda.com/products/modeler/) and [bpmn.io](http://bpmn.io).
+An modeling solution for Flowed, based on [Camunda Modeler](https://camunda.com/products/modeler/) and [bpmn.io](http://bpmn.io).
 
 ![Camunda Modeler](docs/screenshot.png)
 

@@ -15,7 +15,8 @@ describe('util - bpmnToFlowed', function() {
     'conditional',
     'multi-instance-task-parallel',
     'multi-instance-task-sequential',
-    'subflow-empty'
+    'subflow-empty',
+    'simple-task-echo',
   ];
 
   for (let i = 0; i < testCases.length; i++) {

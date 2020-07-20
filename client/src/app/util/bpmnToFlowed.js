@@ -115,6 +115,44 @@ function rule_conditionExpression(node) {
   return node.content[0].content;
 }
 
+function rule_task_extensionElements_params(node) {
+  validateNode(node, { type: 'element', name: 'flowed:params' });
+
+  return node.content.reduce((acc, param) => {
+    const paramName = param.name.split(':')[1];
+    acc[paramName] = param.content[0].content;
+    return acc;
+  }, {});
+}
+
+function rule_task_extensionElements_results(node) {
+  validateNode(node, { type: 'element', name: 'flowed:results' });
+
+  return node.content.reduce((acc, result) => {
+    const resultName = result.name.split(':')[1];
+    acc[resultName] = result.content[0].content;
+    return acc;
+  }, {});
+}
+
+function rule_task_extensionElements(node) {
+  validateNode(node, { type: 'element', name: 'bpmn:extensionElements' });
+
+  const resolverInfo = {};
+
+  const params = node.content.filter(child => child.name === 'flowed:params');
+  if (params.length > 0) {
+    resolverInfo.params = rule_task_extensionElements_params(params[0]);
+  }
+
+  const results = node.content.filter(child => child.name === 'flowed:results');
+  if (results.length > 0) {
+    resolverInfo.results = rule_task_extensionElements_results(results[0]);
+  }
+
+  return resolverInfo;
+}
+
 function rule_task(node, sequences) {
   validateNode(node, { type: 'element', name: 'bpmn:task' });
 
@@ -131,8 +169,20 @@ function rule_task(node, sequences) {
   }
 
   task.resolver = {
-    name: 'flowed::Noop',
+    name: node.attrs['camunda:modelerTemplate'] || 'flowed::Noop',
   };
+
+  const extensionElements = node.content.filter(child => child.name === 'bpmn:extensionElements');
+  if (extensionElements.length > 0) {
+    const extensionElement = extensionElements[0];
+    const resolverInfo = rule_task_extensionElements(extensionElement);
+    if (resolverInfo.params) {
+      task.resolver.params = resolverInfo.params;
+    }
+    if (resolverInfo.results) {
+      task.resolver.results = resolverInfo.results;
+    }
+  }
 
   const loopNodes = node.content.filter(child => child.name === 'bpmn:multiInstanceLoopCharacteristics');
   if (loopNodes.length > 0) {

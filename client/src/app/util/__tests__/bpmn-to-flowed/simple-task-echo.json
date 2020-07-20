@@ -1,0 +1,15 @@
+{
+  "tasks": {
+    "task1": {
+      "resolver": {
+        "name": "flowed::Echo",
+        "params": {
+          "in": "inputEcho"
+        },
+        "results": {
+          "out": "outputEcho"
+        }
+      }
+    }
+  }
+}
