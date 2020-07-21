@@ -1,6 +1,16 @@
 [
   {
-    "name": "Flowed Echo",
+    "name": "Noop",
+    "id": "flowed::Noop",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [],
+    "scopes": {
+    }
+  },
+  {
+    "name": "Echo",
     "id": "flowed::Echo",
     "appliesTo": [
       "bpmn:Task"
@@ -27,6 +37,114 @@
             "binding": {
               "type": "property",
               "name": "out"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "ThrowError",
+    "id": "flowed::ThrowError",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [],
+    "scopes": {
+      "flowed:Params": {
+        "properties": [
+          {
+            "label": "Message",
+            "type": "String",
+            "binding": {
+              "type": "property",
+              "name": "message"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "Wait",
+    "id": "flowed::Wait",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [],
+    "scopes": {
+      "flowed:Params": {
+        "properties": [
+          {
+            "label": "Result",
+            "type": "String",
+            "binding": {
+              "type": "property",
+              "name": "result"
+            }
+          },
+          {
+            "label": "Timeout (ms)",
+            "type": "String",
+            "binding": {
+              "type": "property",
+              "name": "ms"
+            }
+          }
+        ]
+      },
+      "flowed:Results": {
+        "properties": [
+          {
+            "label": "Result",
+            "type": "String",
+            "binding": {
+              "type": "property",
+              "name": "result"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "Stop",
+    "id": "flowed::Stop",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [],
+    "scopes": {
+      "flowed:Results": {
+        "properties": [
+          {
+            "label": "Promise",
+            "type": "String",
+            "binding": {
+              "type": "property",
+              "name": "promise"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "Pause",
+    "id": "flowed::Pause",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [],
+    "scopes": {
+      "flowed:Results": {
+        "properties": [
+          {
+            "label": "Promise",
+            "type": "String",
+            "binding": {
+              "type": "property",
+              "name": "promise"
             }
           }
         ]

@@ -8,10 +8,22 @@
   "associations": [],
   "types": [
     {
-      "name": "flowed:Results",
+      "name": "flowed:Params",
       "properties": [
         {
-          "name": "out",
+          "name": "in",
+          "type": "String"
+        },
+        {
+          "name": "message",
+          "type": "String"
+        },
+        {
+          "name": "result",
+          "type": "String"
+        },
+        {
+          "name": "ms",
           "type": "String"
         },
         {
@@ -25,10 +37,18 @@
       ]
     },
     {
-      "name": "flowed:Params",
+      "name": "flowed:Results",
       "properties": [
         {
-          "name": "in",
+          "name": "out",
+          "type": "String"
+        },
+        {
+          "name": "result",
+          "type": "String"
+        },
+        {
+          "name": "promise",
           "type": "String"
         },
         {

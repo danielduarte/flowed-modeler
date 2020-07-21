@@ -57,7 +57,9 @@ module.exports = function(group, element, bpmnFactory, canvas, translate) {
 
     // name
     group.entries = group.entries.concat(nameEntryFactory(element, options, translate));
+  }
 
+  if (is(element, 'bpmn:SequenceFlow')) {
     // value id
     const valueIdOpts = {
       ...options,
@@ -67,5 +69,4 @@ module.exports = function(group, element, bpmnFactory, canvas, translate) {
     };
     group.entries = group.entries.concat(nameEntryFactory(element, valueIdOpts, translate));
   }
-
 };
