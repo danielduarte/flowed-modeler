@@ -488,6 +488,11 @@ function bootstrap() {
     flags: flagOverrides
   } = Cli.parse(process.argv, cwd);
 
+  Object.assign(flagOverrides, {
+    'disable-dmn': true,
+    'disable-cmmn': true,
+  });
+
   // (1) user path
   if (flagOverrides['user-data-dir']) {
     app.setPath('userData', flagOverrides['user-data-dir']);
