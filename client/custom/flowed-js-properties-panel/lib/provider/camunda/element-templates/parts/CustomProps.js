@@ -32,6 +32,9 @@ var CAMUNDA_PROPERTY_TYPE = 'camunda:property',
     CAMUNDA_EXECUTION_LISTENER_TYPE = 'camunda:executionListener',
     CAMUNDA_FIELD = 'camunda:field';
 
+// @todo To be used for manual values or transformations
+var escapeHTML = require('../../../../Utils').escapeHTML;
+
 var BASIC_MODDLE_TYPES = [
   'Boolean',
   'Integer',
@@ -106,6 +109,38 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate) {
       entryOptions.selectOptions = p.choices;
 
       entry = entryFactory.selectBox(entryOptions);
+    }
+
+    if (propertyType === 'Inputs' || propertyType === 'Outputs') {
+      const bo = getBusinessObject(element);
+      const links = bo[propertyType === 'Inputs' ? 'incoming' : 'outgoing'] || [];
+
+      const fixedOpts = [
+        { name: '-- Empty --'  , value: '' },
+        { name: '-- Value --'  , value: '::flowed:value::' },
+        { name: '-- Transform --'  , value: '::flowed:transform::' },
+      ];
+
+      const linkOpts = links.map(link => {
+        const value = link.$attrs.valueId || link.id;
+        return { "name": value, "value": value };
+      });
+
+      entryOptions.selectOptions = [...fixedOpts, ...linkOpts];
+
+      entry = entryFactory.selectBox(entryOptions);
+
+      // @todo To be used for manual values or transformations
+      // const customVal = ['::flowed:value::', '::flowed:transform::'].includes(getPropertyValue(element, p));
+      // if (customVal) {
+      //   const canBeShown = !!entryOptions.show && typeof entryOptions.show === 'function';
+      //   const valueEntryHtml =
+      //     '<div class="cpp-field-wrapper" ' + (canBeShown ? 'data-show="isShown"' : '') + '>' +
+      //       '<div contenteditable="true" idX="camunda-' + escapeHTML(entryOptions.id) + '" ' + 'nameX="' + escapeHTML(entryOptions.modelProperty) + '" />' +
+      //     '</div>';
+      //
+      //   entry.html += valueEntryHtml;
+      // }
     }
 
     return entry;
@@ -463,7 +498,6 @@ function setPropertyValue(element, property, value, bpmnFactory) {
     } else {
 
       var moddlePropertyDescriptor = bo.$descriptor.propertiesByName[bindingName];
-console.log('properties->', bo.$descriptor.propertiesByName);
       var moddleType = moddlePropertyDescriptor.type;
 
       // make sure we only update String, Integer, Real and

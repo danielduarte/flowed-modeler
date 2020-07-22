@@ -5,7 +5,7 @@ var isObject = require('lodash/isObject');
 
 var DROPDOWN_TYPE = 'Dropdown';
 
-var VALID_TYPES = [ 'String', 'Text', 'Boolean', 'Hidden', DROPDOWN_TYPE ];
+var VALID_TYPES = [ 'String', 'Text', 'Boolean', 'Hidden', DROPDOWN_TYPE, 'Inputs', 'Outputs' ];
 
 var PROPERTY_TYPE = 'property',
     CAMUNDA_PROPERTY_TYPE = 'camunda:property',
