@@ -39,7 +39,7 @@ export default class EmptyTab extends PureComponent {
       <Tab className={ css.EmptyTab }>
         <p className="create-buttons">
           <span>Create a </span>
-          <button className="create-bpmn btn btn-secondary" onClick={ () => onAction('create-bpmn-diagram') }>BPMN diagram</button>
+          <button className="create-bpmn btn btn-secondary" onClick={ () => onAction('create-flowed-diagram') }>Flowed diagram</button>
           {
             !Flags.get(DISABLE_DMN) && (
               <Fragment>

@@ -1920,8 +1920,8 @@ export class App extends PureComponent {
                   onClose={ this.handleCloseTab }
                   placeholder={ {
                     label: '+',
-                    title: 'New BPMN diagram',
-                    onClick: this.composeAction('create-bpmn-diagram')
+                    title: 'New Flowed diagram',
+                    onClick: this.composeAction('create-flowed-diagram')
                   } }
                   draggable
                   scrollable

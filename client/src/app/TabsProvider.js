@@ -120,14 +120,7 @@ export default class TabsProvider {
           return bpmnDiagram;
         },
         getHelpMenu() {
-          return [{
-            label: 'BPMN 2.0 Tutorial',
-            action: 'https://camunda.org/bpmn/tutorial/'
-          },
-          {
-            label: 'BPMN Modeling Reference',
-            action: 'https://camunda.org/bpmn/reference/'
-          }];
+          return [];
         },
         getNewFileMenu() {
           return [{
