@@ -123,6 +123,16 @@ export class TabsProvider {
     };
 
     this.providers = {
+      flowed: {
+        name: 'Flowed',
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'flowed', 'json' ],
+      },
       bpmn: {
         name: 'BPMN',
         encoding: ENCODING_UTF8,
