@@ -175,7 +175,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate) {
 
       var customScopeFieldsGroup = {
         id: 'customField-' + idScopeName,
-        label: translate('Custom Fields for scope: ') + scopeName,
+        label: scopeName.replace(/flowed:/g, ''),
         entries: []
       };
 

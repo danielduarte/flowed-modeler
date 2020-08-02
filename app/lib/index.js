@@ -502,7 +502,8 @@ function bootstrap() {
 
   let resourcesPaths = [
     path.join(appPath, 'resources'),
-    path.join(userPath, 'resources')
+    path.join(userPath, 'resources'),
+    // @todo here it can be added another resource directory
   ];
 
   if (process.env.NODE_ENV === 'development') {

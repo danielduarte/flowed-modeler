@@ -1,0 +1,66 @@
+/**
+ * Palette
+ */
+
+.djs-container .djs-palette {
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+.djs-container .djs-minimap {
+  right: 0;
+  top: 0;
+}
+
+@import "";
+
+@font-face {
+  font-family: 'flowed';
+  src:  url('fonts/flowed.eot?t7z4og');
+  src: url('fonts/flowed.eot?t7z4og#iefix') format('embedded-opentype'),
+  url('fonts/flowed.ttf?t7z4og') format('truetype'),
+  url('fonts/flowed.woff?t7z4og') format('woff'),
+  url('fonts/flowed.svg?t7z4og#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="flowed-icon-"]:before, [class*=" flowed-icon-"]:before {
+  font-family: "flowed";
+
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  /* margin-right: .2em; */
+  text-align: center;
+  /* opacity: .8; */
+
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  /* margin-left: .2em; */
+
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+
+  /* Uncomment for 3D effect */
+  /*text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3);*/
+}
+
+.flowed-icon-resolver-echo:before { content: '\e900'; }
+.flowed-icon-resolver-wait:before { content: '\e901'; }
+.flowed-icon-resolver-throwerror:before { content: '\e902'; }
+.flowed-icon-resolver-stop:before { content: '\e903'; }
+.flowed-icon-resolver-pause:before { content: '\e904'; }
