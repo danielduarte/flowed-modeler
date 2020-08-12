@@ -25,13 +25,14 @@ class Config {
   constructor(options) {
     const {
       resourcesPaths,
+      fixedTemplatePaths,
       userPath
     } = options;
 
     this._defaultProvider = new DefaultProvider(path.join(userPath, 'config.json'));
 
     this._providers = {
-      'bpmn.elementTemplates': new ElementTemplatesProvider(resourcesPaths),
+      'bpmn.elementTemplates': new ElementTemplatesProvider(resourcesPaths, fixedTemplatePaths),
       'editor.id': new UUIDProvider(path.join(userPath, '.editorid')),
       'os.info': new OSInfoProvider()
     };

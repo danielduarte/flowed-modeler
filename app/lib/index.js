@@ -507,6 +507,10 @@ function bootstrap() {
     // @todo here it can be added another resource directory
   ];
 
+  const fixedTemplatePaths = [
+    '../../../custom/resources/element-templates/flowed'
+  ];
+
   if (process.env.NODE_ENV === 'development') {
     resourcesPaths = [
       ...resourcesPaths,
@@ -518,6 +522,7 @@ function bootstrap() {
   const config = new Config({
     appPath,
     resourcesPaths,
+    fixedTemplatePaths,
     userPath
   });
 

@@ -22,8 +22,9 @@ const log = require('../../log')('app:config:element-templates');
  * Get element templates.
  */
 class ElementTemplatesProvider {
-  constructor(paths) {
+  constructor(paths, fixedTemplatePaths = []) {
     this._paths = paths;
+    this._fixedTemplatePaths = fixedTemplatePaths;
   }
 
   /**
@@ -42,7 +43,7 @@ class ElementTemplatesProvider {
       ...this._paths
     ];
 
-    return getTemplates(paths);
+    return getTemplates(paths, this._fixedTemplatePaths);
   }
 }
 
@@ -67,10 +68,15 @@ function suffixAll(paths, suffix) {
  * Get element templates.
  *
  * @param  {Array<string>} paths
+ * @param  {Array<string>} fixedTemplatePaths
  *
  * @return {Array<Template>}
  */
-function getTemplates(paths) {
+function getTemplates(paths, fixedTemplatePaths = []) {
+  const fixedTemplates = fixedTemplatePaths.reduce((templates, path) => {
+    return [...templates, ...require(path)];
+  }, []);
+
   return paths.reduce((templates, path) => {
     let files;
 
@@ -87,7 +93,7 @@ function getTemplates(paths) {
       ...templates,
       ...getTemplatesForPaths(files)
     ];
-  }, []);
+  }, fixedTemplates);
 }
 
 /**
