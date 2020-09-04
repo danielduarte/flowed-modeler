@@ -74,7 +74,7 @@ function suffixAll(paths, suffix) {
  */
 function getTemplates(paths, fixedTemplatePaths = []) {
   const fixedTemplates = fixedTemplatePaths.reduce((templates, path) => {
-    return [...templates, ...require(path)];
+    return [...templates, ...require('../../../' + path)];
   }, []);
 
   return paths.reduce((templates, path) => {

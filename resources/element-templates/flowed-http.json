@@ -1,0 +1,183 @@
+[
+  {
+    "name": "HttpRequest",
+    "id": "flowed::HttpRequest",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [],
+    "entriesVisible": {
+      "_all": true
+    },
+    "scopes": {
+      "flowed:Params": {
+        "properties": [
+          {
+            "label": "Url",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "url"
+            }
+          },
+          {
+            "label": "Method",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "method"
+            }
+          },
+          {
+            "label": "Headers",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "headers"
+            }
+          },
+          {
+            "label": "Query",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "query"
+            }
+          },
+          {
+            "label": "Body",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "body"
+            }
+          },
+          {
+            "label": "Timeout",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "timeout"
+            }
+          },
+          {
+            "label": "Auth",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "auth"
+            }
+          },
+          {
+            "label": "Response Type",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "responseType"
+            }
+          },
+          {
+            "label": "Response Encoding",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "responseEncoding"
+            }
+          },
+          {
+            "label": "Xsrf Cookie Name",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "xsrfCookieName"
+            }
+          },
+          {
+            "label": "Xsrf Header Name",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "xsrfHeaderName"
+            }
+          },
+          {
+            "label": "Max Content Length",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "maxContentLength"
+            }
+          },
+          {
+            "label": "Max Body Length",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "maxBodyLength"
+            }
+          },
+          {
+            "label": "Max Redirects",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "maxRedirects"
+            }
+          },
+          {
+            "label": "Proxy",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "proxy"
+            }
+          },
+          {
+            "label": "Decompress",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "decompress"
+            }
+          }
+        ]
+      },
+      "flowed:Results": {
+        "properties": [
+          {
+            "label": "Status",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "status"
+            }
+          },
+          {
+            "label": "Status Text",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "statusText"
+            }
+          },
+          {
+            "label": "Headers",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "headers"
+            }
+          },
+          {
+            "label": "Body",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "body"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

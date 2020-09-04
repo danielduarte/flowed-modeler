@@ -508,7 +508,7 @@ function bootstrap() {
   ];
 
   const fixedTemplatePaths = [
-    '../../../custom/resources/element-templates/flowed'
+    'custom/resources/element-templates/flowed',
   ];
 
   if (process.env.NODE_ENV === 'development') {
