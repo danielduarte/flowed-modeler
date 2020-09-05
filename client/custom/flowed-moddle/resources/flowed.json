@@ -27,6 +27,14 @@
           "type": "String"
         },
         {
+          "name": "path",
+          "type": "String"
+        },
+        {
+          "name": "method",
+          "type": "String"
+        },
+        {
           "name": "inout",
           "type": "String",
           "isAttr": true

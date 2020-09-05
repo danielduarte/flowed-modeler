@@ -32,6 +32,7 @@ import flowedModdlePackage from '../../../../../custom/flowed-moddle/resources/f
 import flowedModdleExtension from '../../../../../custom/flowed-moddle/lib';
 import flowedBpmnFactory from '../../../../../custom/flowed-bpmn-factory';
 import flowedPalette from '../../../../../custom/flowed-palette';
+import flowedPropertyPanel from '../../../../../custom/custom-property-panel';
 
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from '../../../../../custom/flowed-js-properties-panel/lib/provider/camunda';
@@ -84,6 +85,7 @@ const extensionModules = [
   disableCollapsedSubprocessModule,
   flowedBpmnFactory,
   flowedPalette,
+  flowedPropertyPanel,
 ];
 
 FlowedModeler.prototype._modules = [

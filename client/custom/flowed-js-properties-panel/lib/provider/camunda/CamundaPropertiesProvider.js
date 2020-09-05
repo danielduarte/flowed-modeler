@@ -137,7 +137,7 @@ var TASK_KEY_HINT = 'This maps to the task definition key.';
 
 function createGeneralTabGroups(
     element, canvas, bpmnFactory,
-    elementRegistry, elementTemplates, translate) {
+    elementRegistry, elementTemplates, translate, redraw) {
 
   // refer to target element for external labels
   element = element.labelTarget || element;
@@ -170,7 +170,7 @@ function createGeneralTabGroups(
   executableProps(generalGroup, element, translate);
   elementTemplateChooserProps(generalGroup, element, elementTemplates, translate);
 
-  var customFieldsGroups = elementTemplateCustomProps(element, elementTemplates, bpmnFactory, translate);
+  var customFieldsGroups = elementTemplateCustomProps(element, elementTemplates, bpmnFactory, translate, redraw);
 
   var detailsGroup = {
     id: 'details',
@@ -379,12 +379,16 @@ function CamundaPropertiesProvider(
 
   this.getTabs = function(element) {
 
+    const redraw = () => {
+      this._propertiesPanel.update(element, true);
+    };
+
     var generalTab = {
       id: 'general',
       label: translate('General'),
       groups: createGeneralTabGroups(
         element, canvas, bpmnFactory,
-        elementRegistry, elementTemplates, translate)
+        elementRegistry, elementTemplates, translate, redraw)
     };
 
     var variablesTab = {

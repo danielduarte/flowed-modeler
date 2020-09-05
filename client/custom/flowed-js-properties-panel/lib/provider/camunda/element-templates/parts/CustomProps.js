@@ -62,6 +62,11 @@ var IN_OUT_BINDING_TYPES = [
   CAMUNDA_IN_BUSINESS_KEY_TYPE
 ];
 
+const openApi = {
+  status: 'todo',
+  spec: null,
+};
+
 /**
  * Injects custom properties into the given group.
  *
@@ -70,13 +75,31 @@ var IN_OUT_BINDING_TYPES = [
  * @param {BpmnFactory} bpmnFactory
  * @param {Function} translate
  */
-module.exports = function(element, elementTemplates, bpmnFactory, translate) {
+module.exports = function(element, elementTemplates, bpmnFactory, translate, redraw) {
 
   var template = getTemplate(element, elementTemplates);
 
   if (!template) {
     return [];
   }
+
+  const getOpenApi = async () => {
+    // @todo make this URL configurable
+    const response = await fetch('http://[::1]:3000/explorer/openapi.json');
+    return await response.json();
+  };
+
+  const choicesFns = {
+    'openApi.paths': () => (openApi.spec !== null && Object.keys(openApi.spec.paths) || []).map(path => ({ "name": path, "value": path })),
+    'openApi.methods': (element) => {
+      const path = element.businessObject.extensionElements.values[0].path;
+      if (typeof path !== 'undefined') {
+        const pathDef = openApi.spec.paths[path];
+        return Object.entries(pathDef).map(([method, opDef]) => ({ "name": `${method} (${opDef.operationId})`, "value": method }));
+      }
+      return [];
+    },
+  };
 
   var renderCustomField = function(id, p, idx) {
     var propertyType = p.type;
@@ -87,7 +110,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate) {
       label: p.label ? translate(p.label) : p.label,
       modelProperty: id,
       get: propertyGetter(id, p),
-      set: propertySetter(id, p, bpmnFactory),
+      set: propertySetter(id, p, bpmnFactory, redraw),
       validate: propertyValidator(id, p, translate)
     };
 
@@ -115,6 +138,15 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate) {
       const bo = getBusinessObject(element);
       const links = bo[propertyType === 'Inputs' ? 'incoming' : 'outgoing'] || [];
 
+      if (openApi.status === 'todo') {
+        openApi.status = 'pending';
+        getOpenApi().then(openapi => {
+          openApi.status = 'done';
+          openApi.spec = openapi;
+          redraw();
+        });
+      }
+
       const fixedOpts = [
         { name: '-- Empty --'  , value: '' },
         { name: '-- Value --'  , value: '::flowed:value::' },
@@ -126,7 +158,9 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate) {
         return { "name": value, "value": value };
       });
 
-      entryOptions.selectOptions = [...fixedOpts, ...linkOpts];
+      const specOpts = typeof p.choicesFn === 'string' ? choicesFns[p.choicesFn](element) : [];
+
+      entryOptions.selectOptions = [...fixedOpts, ...linkOpts, ...specOpts];
 
       entry = entryFactory.selectBox(entryOptions);
 
@@ -231,14 +265,14 @@ function propertyGetter(name, property) {
  *
  * @return {Function}
  */
-function propertySetter(name, property, bpmnFactory) {
+function propertySetter(name, property, bpmnFactory, redraw) {
 
   /* setter */
   return function set(element, values) {
-
     var value = values[name];
-
-    return setPropertyValue(element, property, value, bpmnFactory);
+    const commands = setPropertyValue(element, property, value, bpmnFactory);
+    setImmediate(() => redraw());
+    return commands;
   };
 }
 

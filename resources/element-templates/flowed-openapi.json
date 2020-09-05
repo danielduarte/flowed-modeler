@@ -1,0 +1,73 @@
+[
+  {
+    "name": "OpenApi",
+    "id": "flowed::OpenApi",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [],
+    "entriesVisible": {
+      "_all": true
+    },
+    "scopes": {
+      "flowed:Params": {
+        "properties": [
+          {
+            "label": "Path",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "path"
+            },
+            "choicesFn": "openApi.paths"
+          },
+          {
+            "label": "Method",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "method"
+            },
+            "choicesFn": "openApi.methods"
+          }
+        ]
+      },
+      "flowed:Results": {
+        "properties": [
+          {
+            "label": "Status",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "status"
+            }
+          },
+          {
+            "label": "Status Text",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "statusText"
+            }
+          },
+          {
+            "label": "Headers",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "headers"
+            }
+          },
+          {
+            "label": "Body",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "body"
+            }
+          }
+        ]
+      }
+    }
+  }
+]
