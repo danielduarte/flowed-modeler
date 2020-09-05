@@ -67,6 +67,26 @@ const openApi = {
   spec: null,
 };
 
+const onSetPropertyFns = {
+  'openApi.methods': (element, bpmnFactory) => {
+    const bo = element.businessObject;
+    const path = bo.extensionElements.values[0].path;
+    const method = bo.extensionElements.values[0].method;
+    if (typeof path === 'string' && typeof method === 'string' && openApi.spec.paths[path][method]) {
+      const opDef = openApi.spec.paths[path][method];
+
+      let inputOutput = findExtension(bo, 'camunda:InputOutput');
+      if (typeof inputOutput === 'undefined') {
+        inputOutput = elementHelper.createElement('camunda:InputOutput', null, bo, bpmnFactory);
+        bo.extensionElements.values.push(inputOutput);
+      }
+
+      const params = (opDef.parameters || []).map(p => p.name);
+      inputOutput.inputParameters = params.map(name => elementHelper.createElement('camunda:InputParameter', { name }, bo, bpmnFactory));
+    }
+  },
+};
+
 /**
  * Injects custom properties into the given group.
  *
@@ -95,7 +115,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       const path = element.businessObject.extensionElements.values[0].path;
       if (typeof path !== 'undefined') {
         const pathDef = openApi.spec.paths[path];
-        return Object.entries(pathDef).map(([method, opDef]) => ({ "name": `${method} (${opDef.operationId})`, "value": method }));
+        return Object.entries(pathDef).map(([method, opDef]) => ({ "name": `${method.toUpperCase()} (${opDef.operationId})`, "value": method }));
       }
       return [];
     },
@@ -270,9 +290,11 @@ function propertySetter(name, property, bpmnFactory, redraw) {
   /* setter */
   return function set(element, values) {
     var value = values[name];
-    const commands = setPropertyValue(element, property, value, bpmnFactory);
-    setImmediate(() => redraw());
-    return commands;
+    setImmediate(() => {
+      typeof property.onSetPropertyFn === 'string' && onSetPropertyFns[property.onSetPropertyFn](element, bpmnFactory);
+      redraw();
+    });
+    return setPropertyValue(element, property, value, bpmnFactory);
   };
 }
 

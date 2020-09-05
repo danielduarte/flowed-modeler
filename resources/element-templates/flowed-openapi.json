@@ -28,7 +28,8 @@
               "type": "property",
               "name": "method"
             },
-            "choicesFn": "openApi.methods"
+            "choicesFn": "openApi.methods",
+            "onSetPropertyFn": "openApi.methods"
           }
         ]
       },
