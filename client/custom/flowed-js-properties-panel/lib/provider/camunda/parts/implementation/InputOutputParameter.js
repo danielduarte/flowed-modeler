@@ -27,6 +27,10 @@ function isMap(elem) {
   return is(elem, 'camunda:Map');
 }
 
+function isParameter(elem) {
+  return is(elem, 'flowed:Parameter');
+}
+
 function ensureInputOutputSupported(element, insideConnector) {
   return inputOutputHelper.isInputOutputSupported(element, insideConnector);
 }
@@ -34,6 +38,10 @@ function ensureInputOutputSupported(element, insideConnector) {
 module.exports = function(element, bpmnFactory, options, translate) {
 
   var typeInfo = {
+    'flowed:Parameter': {
+      value: 'parameter',
+      label: translate('Parameter')
+    },
     'camunda:Map': {
       value: 'map',
       label: translate('Map')
@@ -110,6 +118,7 @@ module.exports = function(element, bpmnFactory, options, translate) {
   // parameter type //////////////////////////////////////////////////////
 
   var selectOptions = [
+    { value: 'parameter', name: translate('Parameter') },
     { value: 'text', name: translate('Text') },
     { value: 'script', name: translate('Script') },
     { value: 'list', name: translate('List') },
@@ -154,7 +163,10 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
       var parameterType = values.parameterType;
 
-      if (parameterType === 'script') {
+      if (parameterType === 'parameter') {
+        properties.definition = createParameterTypeElem('flowed:Parameter');
+      }
+      else if (parameterType === 'script') {
         properties.definition = createParameterTypeElem('camunda:Script');
       }
       else if (parameterType === 'list') {
@@ -173,6 +185,40 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
   }));
 
+
+  // parameter value (type = parameter) ///////////////////////////////////////////////////////
+  var bo = element.businessObject;
+  const links = bo.incoming || [];
+  const linkOpts = links.map(link => {
+    const value = link.$attrs.valueId || link.id;
+    return { "name": value, "value": value };
+  });
+
+  entries.push(entryFactory.selectBox({
+    id: idPrefix + 'parameterType-parameter',
+    label: translate('Input'),
+    modelProperty: 'value',
+    selectOptions: [{ name: '', value: undefined }, ...linkOpts],
+
+    get: function(element, node) {
+      const selected = getSelected(element, node) || {};
+      const def = selected.definition || {};
+      return {
+        value: def.value
+      };
+    },
+
+    set: function(element, values, node) {
+      const param = getSelected(element, node).definition;
+      values.value = values.value || undefined;
+      return cmdHelper.updateBusinessObject(element, param, values);
+    },
+
+    hidden: function(element, node) {
+      const bo = getSelected(element, node);
+      return !(bo && bo.definition && isParameter(bo.definition));
+    }
+  }));
 
   // parameter value (type = text) ///////////////////////////////////////////////////////
 

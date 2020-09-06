@@ -769,6 +769,24 @@
       ]
     },
     {
+      "name": "flowed:Parameter",
+      "superClass": [
+        "camunda:InputOutputParameterDefinition"
+      ],
+      "properties": [
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "isBody": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
       "name": "camunda:Script",
       "superClass": [
         "camunda:InputOutputParameterDefinition"

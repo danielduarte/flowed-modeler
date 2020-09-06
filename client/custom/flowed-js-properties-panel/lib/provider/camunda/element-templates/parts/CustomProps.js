@@ -69,6 +69,7 @@ const openApi = {
 
 const onSetPropertyFns = {
   'openApi.methods': (element, bpmnFactory) => {
+    if (openApi.spec === null) { return []; }
     const bo = element.businessObject;
     const path = bo.extensionElements.values[0].path;
     const method = bo.extensionElements.values[0].method;
@@ -110,8 +111,12 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
   };
 
   const choicesFns = {
-    'openApi.paths': () => (openApi.spec !== null && Object.keys(openApi.spec.paths) || []).map(path => ({ "name": path, "value": path })),
+    'openApi.paths': () => {
+      if (openApi.spec === null) { return []; }
+      return (openApi.spec !== null && Object.keys(openApi.spec.paths) || []).map(path => ({ "name": path, "value": path }));
+    },
     'openApi.methods': (element) => {
+      if (openApi.spec === null) { return []; }
       const path = element.businessObject.extensionElements.values[0].path;
       if (typeof path !== 'undefined') {
         const pathDef = openApi.spec.paths[path];

@@ -59,6 +59,7 @@ function ensureOutparameterSupported(element, insideConnector) {
 module.exports = function(element, bpmnFactory, options, translate) {
 
   var TYPE_LABEL = {
+    'flowed:Parameter': translate('Parameter'),
     'camunda:Map': translate('Map'),
     'camunda:List': translate('List'),
     'camunda:Script': translate('Script')
