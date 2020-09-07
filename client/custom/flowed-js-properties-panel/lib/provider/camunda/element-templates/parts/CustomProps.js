@@ -106,7 +106,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
 
   const getOpenApi = async () => {
     // @todo make this URL configurable
-    const response = await fetch('http://[::1]:3000/explorer/openapi.json');
+    const response = await fetch('http://localhost:3003/explorer/openapi.json');
     return await response.json();
   };
 
