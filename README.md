@@ -1,9 +1,10 @@
 # Flowed Modeler
 
-An modeling solution for Flowed, based on [Camunda Modeler](https://camunda.com/products/modeler/) and [bpmn.io](http://bpmn.io).
+An modeling solution for [Flowed](https://danielduarte.github.io/flowed).
 
-![Camunda Modeler](docs/screenshot.png)
+![Flowed Modeler](docs/screenshot.png)
 
+Based on [Camunda Modeler](https://camunda.com/products/modeler/) and [bpmn.io](http://bpmn.io).
 
 ## Resources
 
@@ -44,6 +45,6 @@ npm run dev
 
 MIT
 
-Uses [camunda-modeler](https://github.com/camunda/camunda-modeler), licensed under the [MIT license](https://github.com/camunda/camunda-modeler/blob/develop/LICENSE).
-
 Uses [bpmn-js](https://github.com/bpmn-io/bpmn-js), [dmn-js](https://github.com/bpmn-io/dmn-js), and [cmmn-js](https://github.com/bpmn-io/cmmn-js), licensed under the [bpmn.io license](http://bpmn.io/license).
+
+Uses [camunda-modeler](https://github.com/camunda/camunda-modeler), licensed under the [MIT license](https://github.com/camunda/camunda-modeler/blob/develop/LICENSE).

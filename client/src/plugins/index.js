@@ -9,6 +9,7 @@
  */
 
 import CamundaPlugin from './camunda-plugin';
+import FlowedPlugin from './flowed-plugin';
 
 // import PrivacyPreferences from './privacy-preferences';  // Do not use privacy settings for now
 import UpdateChecks from './update-checks';
@@ -16,6 +17,7 @@ import ErrorTracking from './error-tracking';
 
 export default [
   CamundaPlugin,
+  FlowedPlugin,
 
   // PrivacyPreferences, // Do not use privacy settings for now
   UpdateChecks,
