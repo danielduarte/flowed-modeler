@@ -1,10 +1,14 @@
 import BpmnFactory from 'bpmn-js/lib/features/modeling/BpmnFactory';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
+import IdGenerator from '../../../src/util/id-generator';
 
 class FlowedFactory extends BpmnFactory {
 
-  nextIdByType = {};
+  constructor(moddle, elementRegistry) {
+    super(moddle);
+    this.idGenerator = new IdGenerator(elementRegistry);
+  }
 
   /**
    * Generate semantic ids for elements when required.
@@ -22,7 +26,7 @@ class FlowedFactory extends BpmnFactory {
     if (is(element, 'bpmn:Activity')) {
       prefix = 'task';
     } else if (is(element, 'bpmn:Gateway')) {
-      prefix = 'condTask';
+      prefix = 'cond';
     } else if (isAny(element, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ])) {
       prefix = 'val';
     } else {
@@ -30,14 +34,10 @@ class FlowedFactory extends BpmnFactory {
     }
     prefix = prefix[0].toLowerCase() + prefix.slice(1); // to camel case
 
-
-    if (!Object.hasOwnProperty.call(this.nextIdByType, prefix)) {
-      this.nextIdByType[prefix] = 1;
-    }
-
-    element.id = `${prefix}${this.nextIdByType[prefix]}`;
-    this.nextIdByType[prefix]++;
+    element.id = this.idGenerator.next(prefix);
   }
 }
+
+FlowedFactory.$inject = [ 'moddle', 'elementRegistry' ];
 
 export default FlowedFactory;
