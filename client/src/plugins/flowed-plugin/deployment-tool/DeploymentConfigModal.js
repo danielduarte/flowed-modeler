@@ -9,59 +9,32 @@
  */
 
 import React from 'react';
-
 import { Modal } from '../../../app/primitives';
-
-import {
-  omit
-} from 'min-dash';
-
+import { omit } from 'min-dash';
 import css from './DeploymentConfigModal.less';
-
-import AuthTypes from '../shared/AuthTypes';
-
-import {
-  CheckBox,
-  Radio,
-  TextInput
-} from '../shared/components';
-
-import {
-  Formik,
-  Field
-} from 'formik';
+import { TextInput } from '../shared/components';
+import { Formik, Field } from 'formik';
 
 
 export default class DeploymentConfigModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      isAuthNeeded: false
-    };
-
     this.valuesCache = { ...props.configuration };
   }
 
   componentDidMount = () => {
-    const {
-      subscribeToFocusChange,
-      validator
-    } = this.props;
-
-    const {
-      onAppFocusChange
-    } = this;
+    const { subscribeToFocusChange, validator } = this.props;
+    const { onAppFocusChange } = this;
 
     subscribeToFocusChange(onAppFocusChange);
 
     validator.resetCancel();
-  }
+  };
 
   componentWillUnmount = () => {
     this.props.unsubscribeFromFocusChange();
-  }
+  };
 
   isConnectionError(code) {
     return code === 'NOT_FOUND' || code === 'CONNECTION_FAILED' || code === 'NO_INTERNET_CONNECTION';
@@ -97,124 +70,64 @@ export default class DeploymentConfigModal extends React.PureComponent {
         this.externalErrorCodeCache = code;
       }
     }
-  }
+  };
 
   onSetFieldValueReceived = () => {
 
     // Initial endpoint URL validation. Note that this is not a form validation
     // and should affect only the Endpoint URL field.
     return this.checkEndpointURLConnectivity(true);
-  }
+  };
 
   onAppFocusChange = () => {
 
     // User may fix connection related errors by focusing out from app (turn on wifi, start server etc.)
     // In that case we want to check if errors are fixed when the users focuses back on to the app.
     return this.checkEndpointURLConnectivity();
-  }
+  };
 
-  onClose = (action = 'cancel', data = null, shouldOverrideCredentials = false) => {
-
-    if (shouldOverrideCredentials) {
-
-      const { valuesCache } = this;
-      const { endpoint } = valuesCache;
-      const {
-        username, password, token, rememberCredentials
-      } = endpoint;
-
-      if (rememberCredentials) {
-        this.props.saveCredential({ username, password, token });
-      } else {
-        this.props.removeCredentials();
-      }
-    }
-
+  onClose = (action = 'cancel', data = null) => {
     this.props.onClose(action, data);
-  }
+  };
 
   onSubmit = async (values, { setFieldError }) => {
-
-    const {
-      endpoint
-    } = values;
-
+    const { endpoint } = values;
     const connectionValidation = await this.props.validator.validateConnection(endpoint);
 
     if (!hasKeys(connectionValidation)) {
       this.externalErrorCodeCache = null;
       this.onClose('deploy', values);
     } else {
-
-      const {
-        details,
-        code
-      } = connectionValidation;
-
-      if (code === 'UNAUTHORIZED') {
-        this.setState({
-          isAuthNeeded: true
-        });
-      }
-
+      const { details, code } = connectionValidation;
       this.externalErrorCodeCache = code;
       this.props.validator.onExternalError(values.endpoint.authType, details, code, setFieldError);
     }
-  }
+  };
 
   fieldError = (meta) => {
     return meta.error;
-  }
+  };
 
   setAuthType = (form) => {
 
     return event => {
-
       const authType = event.target.value;
+      const { values, setValues } = form;
 
-      const {
-        values,
-        setValues
-      } = form;
-
-      let {
-        endpoint
-      } = values;
-
-      if (authType !== AuthTypes.basic) {
-        endpoint = omit(endpoint, [ 'username', 'password' ]);
-      }
-
-      if (authType !== AuthTypes.bearer) {
-        endpoint = omit(endpoint, [ 'token' ]);
-      }
+      let { endpoint } = values;
+      endpoint = omit(endpoint, [ 'username', 'password' ]);
+      endpoint = omit(endpoint, [ 'token' ]);
 
       setValues({
         ...values,
-        endpoint: {
-          ...endpoint,
-          authType
-        }
+        endpoint: { ...endpoint, authType }
       });
     };
-
-  }
-
-  onAuthDetection = (isAuthNeeded) => {
-    this.setState({
-      isAuthNeeded
-    });
-  }
+  };
 
   checkAuthStatus = (values) => {
-    this.props.validator.validateConnectionWithoutCredentials(values.endpoint.url).then((result) => {
-      if (!result) {
-        this.onAuthDetection(false);
-      } else if (!result.isExpired) {
-        this.onAuthDetection(!!result && (result.code === 'UNAUTHORIZED'));
-      }
-    });
-  }
+    this.props.validator.validateConnectionWithoutCredentials(values.endpoint.url);
+  };
 
   render() {
 
@@ -233,10 +146,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
       intro,
       primaryAction
     } = this.props;
-
-    const {
-      isAuthNeeded
-    } = this.state;
 
     return (
       <Modal className={ css.DeploymentConfigModal } onClose={ () => {
@@ -298,74 +207,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
                         label="OpenApi Endpoint"
                         hint="Should point to a OpenApi description in JSON format."
                       />
-
-                      {
-                        isAuthNeeded && (
-                          <Field
-                            name="endpoint.authType"
-                            label="Authentication"
-                            component={ Radio }
-                            onChange={ (event) => {
-                              form.handleChange(event);
-                              this.setAuthType(form);
-                            } }
-                            values={
-                              [
-                                { value: AuthTypes.basic, label: 'HTTP Basic' },
-                                { value: AuthTypes.bearer, label: 'Bearer token' }
-                              ]
-                            }
-                          />
-                        )
-                      }
-
-                      { isAuthNeeded && form.values.endpoint.authType === AuthTypes.basic && (
-                        <React.Fragment>
-                          <Field
-                            name="endpoint.username"
-                            component={ TextInput }
-                            fieldError={ fieldError }
-                            validate={ (value) => {
-                              return validator.validateUsername(value || '', this.isOnBeforeSubmit);
-                            } }
-                            label="Username"
-                          />
-
-                          <Field
-                            name="endpoint.password"
-                            component={ TextInput }
-                            fieldError={ fieldError }
-                            validate={ (value) => {
-                              return validator.validatePassword(value || '', this.isOnBeforeSubmit);
-                            } }
-                            label="Password"
-                            type="password"
-                          />
-                        </React.Fragment>
-                      )}
-
-                      { isAuthNeeded && form.values.endpoint.authType === AuthTypes.bearer && (
-                        <Field
-                          name="endpoint.token"
-                          component={ TextInput }
-                          fieldError={ fieldError }
-                          validate={ (value) => {
-                            return validator.validateToken(value || '', this.isOnBeforeSubmit);
-                          } }
-                          label="Token"
-                        />
-                      )}
-
-                      {
-                        isAuthNeeded && (
-                          <Field
-                            name="endpoint.rememberCredentials"
-                            component={ CheckBox }
-                            type="checkbox"
-                            label="Remember credentials"
-                          />
-                        )
-                      }
                     </div>
                   </fieldset>
                 </Modal.Body>

@@ -78,7 +78,6 @@ export default class EndpointURLValidator extends BaseInputValidator {
         }
 
         onConnectionStatusUpdate(code);
-        onAuthDetection(code === 'UNAUTHORIZED');
 
         if (code !== 'UNAUTHORIZED') {
           return this.setFieldError(details, setFieldError);
@@ -86,7 +85,6 @@ export default class EndpointURLValidator extends BaseInputValidator {
       } else {
 
         // auth not needed
-        onAuthDetection(false);
         onConnectionStatusUpdate(null);
       }
     }, this.isDirty ? 1000 : 0);

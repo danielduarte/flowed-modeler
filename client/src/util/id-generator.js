@@ -24,7 +24,9 @@ export default class IdGenerator {
       try {
         this.elementRegistry._validateId(suggestedId);
         idFound = true;
-      } catch (err) {}
+      } catch (err) {
+        idFound = false;
+      }
     }
 
     return suggestedId;

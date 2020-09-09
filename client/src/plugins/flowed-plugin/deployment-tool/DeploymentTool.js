@@ -9,27 +9,15 @@
  */
 
 import React, { PureComponent } from 'react';
-
 import { omit } from 'min-dash';
-
-import { default as CamundaAPI, ApiErrors } from '../shared/CamundaAPI';
 import AuthTypes from '../shared/AuthTypes';
-
 import DeploymentConfigModal from './DeploymentConfigModal';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
-
-import {
-  generateId
-} from '../../../util';
-
+import { generateId } from '../../../util';
 import { Fill } from '../../../app/slot-fill';
-
-import {
-  Button,
-  Icon
-} from '../../../app/primitives';
-
+import { Button, Icon } from '../../../app/primitives';
 import * as Config from '../../../app/util/configs';
+
 
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
@@ -40,8 +28,6 @@ const DEFAULT_ENDPOINT = {
   authType: AuthTypes.basic,
   rememberCredentials: false
 };
-
-const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
 
 export default class DeploymentTool extends PureComponent {
 
@@ -88,72 +74,28 @@ export default class DeploymentTool extends PureComponent {
     return this.deployTab(activeTab, options);
   }
 
-  async deployTab(tab, options={}) {
+  async deployTab(tab, options = {}) {
 
-    const {
-      configure
-    } = options;
-
-    // // (1) Open save file dialog if dirty
-    // tab = await this.saveTab(tab);
-
-    // (1.1) Cancel deploy if file save cancelled
+    // (1) Cancel if file save cancelled
     if (!tab) {
       return;
     }
 
-    // (2) Get deployment configuration
-    // (2.1) Try to get existing deployment configuration
+    // (2) Get configuration
     let configuration = await this.getSavedConfiguration(tab);
 
-    // (2.2) Check if configuration are complete
-    const showConfiguration = configure || !this.canDeployWithConfiguration(configuration);
+    // (3) Open modal to enter deployment configuration
+    const {
+      action,
+      configuration: userConfiguration
+    } = await this.getConfigurationFromUserInput(tab, configuration);
 
-    if (showConfiguration) {
-
-      // (2.3) Open modal to enter deployment configuration
-      const {
-        action,
-        configuration: userConfiguration
-      } = await this.getConfigurationFromUserInput(tab, configuration);
-
-      // (2.3.1) Handle user cancelation
-      if (action === 'cancel') {
-        return;
-      }
-
-      configuration = await this.saveConfiguration(tab, userConfiguration);
-
-      if (action === 'save') {
-        return;
-      }
+    // (4) Handle user cancellation
+    if (action === 'cancel') {
+      return;
     }
 
-    // // (3) Trigger deployment
-    // // (3.1) Show deployment result (success or error)
-    //
-    // try {
-    //   const deployment = await this.deployWithConfiguration(tab, configuration);
-    //
-    //   // (3.2) save deployed process definition
-    //   await this.saveProcessDefinition(tab, deployment);
-    //
-    //   await this.handleDeploymentSuccess(tab, deployment);
-    // } catch (error) {
-    //   await this.handleDeploymentError(tab, error);
-    // }
-  }
-
-  handleDeploymentSuccess(tab, deployment) {
-    const {
-      displayNotification
-    } = this.props;
-
-    displayNotification({
-      type: 'success',
-      title: 'Deployment succeeded',
-      duration: 4000
-    });
+    await this.saveConfiguration(tab, userConfiguration);
   }
 
   async saveProcessDefinition(tab, deployment) {
@@ -171,25 +113,6 @@ export default class DeploymentTool extends PureComponent {
     } = this.props;
 
     return await config.setForFile(tab.file, PROCESS_DEFINITION_CONFIG_KEY, processDefinition);
-  }
-
-  handleDeploymentError(tab, error) {
-    const {
-      log,
-      displayNotification
-    } = this.props;
-
-    displayNotification({
-      type: 'error',
-      title: 'Deployment failed',
-      content: 'See the log for further details.',
-      duration: 10000
-    });
-
-    log({
-      category: 'deploy-error',
-      message: error.problems || error.details || error.message
-    });
   }
 
   async saveConfiguration(tab, configuration) {
@@ -212,12 +135,6 @@ export default class DeploymentTool extends PureComponent {
   }
 
   removeCredentials = async () => {
-    const savedConfiguration = await this.getSavedConfiguration(this.state.activeTab);
-    const omited = omit(savedConfiguration.endpoint, ['username', 'password', 'token']);
-    this.saveEndpoint({
-      ...omited,
-      rememberCredentials: false
-    });
   }
 
   saveCredential = async (credential) => {
@@ -265,27 +182,6 @@ export default class DeploymentTool extends PureComponent {
       deployment,
       endpoint: endpoints.find(endpoint => endpoint.id === endpointId)
     };
-  }
-
-  deployWithConfiguration(tab, configuration) {
-
-    // const {
-    //   endpoint,
-    //   deployment
-    // } = configuration;
-    //
-    // const api = new CamundaAPI(endpoint);
-    //
-    // return api.deployDiagram(tab.file, deployment);
-  }
-
-  canDeployWithConfiguration(configuration) {
-
-    // TODO(nikku): we'll re-enable this, once we make re-deploy
-    // the primary button action: https://github.com/camunda/camunda-modeler/issues/1440
-    return false;
-
-    // return this.validator.isConfigurationValid(configuration);
   }
 
   async getConfigurationFromUserInput(tab, providedConfiguration, uiOptions) {
@@ -355,10 +251,6 @@ export default class DeploymentTool extends PureComponent {
       }
     }
 
-    if (!endpoint.url && (await this.isTomcatRunning())) {
-      defaultUrl = TOMCAT_DEFAULT_URL;
-    }
-
     // since we have deprecated AuthTypes.none, we should correct existing
     // configurations
     if (endpoint.authType !== AuthTypes.basic && endpoint.authType !== AuthTypes.bearer) {
@@ -387,20 +279,6 @@ export default class DeploymentTool extends PureComponent {
     };
   }
 
-  async isTomcatRunning() {
-    const result = await this.validator.validateConnectionWithoutCredentials(TOMCAT_DEFAULT_URL);
-
-    if (!result) {
-      return true;
-    }
-
-    const { code } = result;
-
-    return (code !== ApiErrors.NO_INTERNET_CONNECTION &&
-            code !== ApiErrors.CONNECTION_FAILED &&
-              code !== ApiErrors.NOT_FOUND);
-  }
-
   render() {
     const {
       activeTab,
@@ -427,7 +305,6 @@ export default class DeploymentTool extends PureComponent {
         onClose={ modalState.handleClose }
         validator={ this.validator }
         saveCredential={ this.saveCredential }
-        removeCredentials={ this.removeCredentials }
         subscribeToFocusChange={ this.subscribeToFocusChange }
         unsubscribeFromFocusChange={ this.unsubscribeFromFocusChange }
       />
