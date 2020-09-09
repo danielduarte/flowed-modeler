@@ -29,6 +29,8 @@ import {
   Icon
 } from '../../../app/primitives';
 
+import * as Config from '../../../app/util/configs';
+
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
@@ -320,6 +322,7 @@ export default class DeploymentTool extends PureComponent {
   }
 
   setEndpoints(endpoints) {
+    Config.set('openapi.endpoint', endpoints[0].url);
     return this.props.config.set(ENGINE_ENDPOINTS_CONFIG_KEY, endpoints);
   }
 

@@ -21,13 +21,10 @@ export default class IdGenerator {
 
     while (!idFound) {
       suggestedId = this.nextSuggested(prefix);
-      console.log('Trying Id', suggestedId, '...');
       try {
         this.elementRegistry._validateId(suggestedId);
         idFound = true;
-      } catch (err) {
-        console.log('Id', suggestedId, 'already existed');
-      }
+      } catch (err) {}
     }
 
     return suggestedId;

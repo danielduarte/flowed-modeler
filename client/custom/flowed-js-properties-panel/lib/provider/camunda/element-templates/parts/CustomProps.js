@@ -1,5 +1,6 @@
 'use strict';
 
+const Config = require('../../../../../../../src/app/util/configs');
 var assign = require('lodash/assign');
 
 var entryFactory = require('../../../../factory/EntryFactory'),
@@ -65,6 +66,7 @@ var IN_OUT_BINDING_TYPES = [
 const openApi = {
   status: 'todo',
   spec: null,
+  endpoint: null,
 };
 
 const onSetPropertyFns = {
@@ -105,8 +107,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
   }
 
   const getOpenApi = async () => {
-    // @todo make this URL configurable
-    const response = await fetch('http://localhost:3003/explorer/openapi.json');
+    const response = await fetch(Config.get('openapi.endpoint'));
     return await response.json();
   };
 
@@ -120,7 +121,9 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       const path = element.businessObject.extensionElements.values[0].path;
       if (typeof path !== 'undefined') {
         const pathDef = openApi.spec.paths[path];
-        return Object.entries(pathDef).map(([method, opDef]) => ({ "name": `${method.toUpperCase()} (${opDef.operationId})`, "value": method }));
+        if (typeof pathDef !== 'undefined') {
+          return Object.entries(pathDef).map(([method, opDef]) => ({ "name": `${method.toUpperCase()} (${opDef.operationId})`, "value": method }));
+        }
       }
       return [];
     },
@@ -162,6 +165,14 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
     if (propertyType === 'Inputs' || propertyType === 'Outputs') {
       const bo = getBusinessObject(element);
       const links = bo[propertyType === 'Inputs' ? 'incoming' : 'outgoing'] || [];
+
+      // Invalidate OpenApi spec cache if endpoint changed
+      const currentEndpoint = Config.get('openapi.endpoint');
+      if (currentEndpoint !== openApi.endpoint) {
+        openApi.endpoint = currentEndpoint;
+        openApi.status = 'todo';
+        openApi.spec = null;
+      }
 
       if (openApi.status === 'todo') {
         openApi.status = 'pending';
