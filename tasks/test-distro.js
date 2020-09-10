@@ -62,8 +62,8 @@ const expectedFiles = {
       contents: [
         'Flowed Modeler.exe',
         'support/register_fileassoc.bat',
-        'LICENSE.camunda-modeler.txt',
-        'THIRD_PARTY_NOTICES.camunda-modeler.txt',
+        'LICENSE.flowed-modeler.txt',
+        'THIRD_PARTY_NOTICES.flowed-modeler.txt',
         'VERSION'
       ]
     }
@@ -73,9 +73,9 @@ const expectedFiles = {
       name: 'flowed-modeler-${version}-linux-${arch}.tar.gz',
       archs: [ 'x64' ],
       contents: [
-        'camunda-modeler-${version}-linux-${arch}/camunda-modeler',
-        'camunda-modeler-${version}-linux-${arch}/support/xdg_register.sh',
-        'camunda-modeler-${version}-linux-${arch}/VERSION'
+        'flowed-modeler-${version}-linux-${arch}/flowed-modeler',
+        'flowed-modeler-${version}-linux-${arch}/support/xdg_register.sh',
+        'flowed-modeler-${version}-linux-${arch}/VERSION'
       ]
     }
   ],

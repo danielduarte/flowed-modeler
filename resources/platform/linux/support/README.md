@@ -1,8 +1,7 @@
 # Support Scripts
 
 This folder contains two shell scripts to register and de-register
-the Camunda Modeler as the default editor for BPMN, CMMN and DMN
-files.
+Flowed Modeler as the default editor for Flowed files.
 
 We use xdg-utils from https://www.freedesktop.org/ that are
 are supported by all major Linux desktop environments.
