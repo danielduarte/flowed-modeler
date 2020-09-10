@@ -1,6 +1,6 @@
 # Flowed Modeler
 
-An modeling solution for [Flowed](https://danielduarte.github.io/flowed).
+A modeling solution for [Flowed](https://danielduarte.github.io/flowed).
 
 ![Flowed Modeler](docs/screenshot.png)
 
