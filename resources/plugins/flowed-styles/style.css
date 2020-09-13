@@ -1,0 +1,149 @@
+:root {
+  --color-input: #32297d;
+  --color-label: #65638a;
+  --color-title: #57578c;
+  --color-note: #9c9cd2;
+  --color-accent: #dca237;
+  --color-accent-attenuated: #d6c3a0;
+}
+
+.modal-header,
+.properties-container,
+.bpp-properties,
+.bpp-properties-group,
+.bpp-properties-tabs-links > .bpp-active a,
+ul.bpp-properties-tabs-links > li > a,
+.djs-container .djs-palette,
+.properties .toggle,
+.primary .tab:not(.active),
+.secondary .tab:not(.active),
+.CodeMirror-gutters {
+  background-color: #c5ddff !important; /* secondary background color */
+}
+.bpp-properties-tabs-links > .bpp-active a:before {
+  border-bottom-color: #c5ddff !important; /* secondary background color */
+}
+
+.btn-secondary,
+.modal-dialog,
+.bpp-element-list button,
+.djs-minimap,
+div[contenteditable=true],
+select,
+input,
+.header > button,
+ul.bpp-properties-tabs-links > li > a,
+.djs-palette,
+.bpp-properties-group + .bpp-properties-group,
+.properties.open,
+.toggle,
+.tab,
+.bpp-properties-tab-bar {
+  border-color: #90c0f7 !important; /* secondary border color */
+}
+.modal-content .modal-header {
+  border-bottom-color: #90c0f7 !important; /* secondary border color */
+}
+.modal-content .modal-footer {
+  border-top-color: #90c0f7 !important; /* secondary border color */
+}
+
+/* main toolbar separators */
+.separator {
+  background-color: #90c0f7 !important; /* secondary border color */
+}
+
+ /* design toolbar separators */
+.djs-palette .separator {
+  border-bottom-color: #90c0f7 !important; /* secondary border color */
+  background-color: unset !important;
+}
+
+.primary .tab.active,
+ul.bpp-properties-tabs-links > li.bpp-active a {
+  border-top-color: var(--color-accent) !important;
+}
+
+.modal:before {
+  background-color: #a1cfff !important; /* overlay background color */
+}
+.modal {
+  backdrop-filter: blur(2px);
+}
+
+.modal-content .modal-body,
+.modal-content .modal-footer,
+#root {
+  background-color: #cef2f7 !important; /* primary background color*/
+}
+
+.djs-container,
+.primary .tab.active,
+.secondary .tab.active {
+  background-color: white !important; /* paper background */
+}
+
+.properties {
+  transition: width 100ms; /* properties panel animation */
+}
+
+/* design toolbar */
+.djs-palette {
+  border-left: none !important;
+  /*border-bottom: none !important;*/
+}
+
+.CodeMirror-lines {
+  background-color: #f5f5ff !important; /* code editor background color */
+}
+
+/* inputs */
+div[contenteditable=true],
+select,
+input {
+  background-color: #f5f5ff !important; /* input background color */
+  color: var(--color-input);
+}
+
+/* property panel groups */
+.bpp-properties-group {
+  transition: background-color 400ms !important;
+}
+.bpp-properties-group:hover,
+.bpp-properties-group:focus-within {
+  transition: background-color 200ms !important;
+  background-color: #a9cdff !important;
+}
+.bpp-properties-group:hover .group-toggle {
+  background-color: var(--color-accent-attenuated) !important;
+}
+.bpp-properties-group:focus-within .group-toggle {
+  background-color: var(--color-accent) !important;
+}
+
+/* properly panel labels */
+.bpp-properties-panel label {
+  color: var(--color-label) !important;
+}
+
+/* property panel titles */
+.group-label {
+  color: var(--color-title) !important;
+}
+
+/* property panel notes */
+.bpp-field-description {
+  color: var(--color-note) !important;
+}
+
+/* modal title bar */
+.modal-header {
+  padding: 10px 40px 10px 10px;
+  color: var(--color-title) !important;
+}
+
+/* modal close button */
+.modal-dialog .close {
+  top: 10px;
+  right: 10px;
+}
