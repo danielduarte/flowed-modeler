@@ -132,8 +132,8 @@ function rule_task_extensionElements_inputOutput(node) {
     if (param.content.length > 0) {
       const paramValue = param.content[0].content[0].content;
       if (param.attrs.group) {
-        params[param.attrs.group] = params[param.attrs.group] || {};
-        params[param.attrs.group][param.attrs.name] = paramValue;
+        params[param.attrs.group] = params[param.attrs.group] || { transform: {} };
+        params[param.attrs.group].transform[param.attrs.name] = `{{${paramValue}}}`;
       } else {
         params[param.attrs.name] = paramValue;
       }
