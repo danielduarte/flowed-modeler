@@ -35,6 +35,34 @@
           "type": "String"
         },
         {
+          "name": "serverUrl",
+          "type": "String"
+        },
+        {
+          "name": "query",
+          "type": "String"
+        },
+        {
+          "name": "body",
+          "type": "String"
+        },
+        {
+          "name": "headers",
+          "type": "String"
+        },
+        {
+          "name": "options",
+          "type": "String"
+        },
+        {
+          "name": "pathParams",
+          "type": "String"
+        },
+        {
+          "name": "cookies",
+          "type": "String"
+        },
+        {
           "name": "inout",
           "type": "String",
           "isAttr": true
@@ -86,7 +114,7 @@
       ]
     },
     {
-      "name": "flowed:Parameter",
+      "name": "flowed:TaskInput",
       "superClass": [
         "camunda:InputOutputParameterDefinition"
       ],
@@ -100,6 +128,43 @@
           "name": "value",
           "isBody": true,
           "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "bpmn:SequenceFlow",
+      "superClass": [
+        "bpmn:FlowElement"
+      ],
+      "properties": [
+        {
+          "name": "isImmediate",
+          "isAttr": true,
+          "type": "Boolean"
+        },
+        {
+          "name": "conditionExpression",
+          "type": "Expression",
+          "xml": {
+            "serialize": "xsi:type"
+          }
+        },
+        {
+          "name": "sourceRef",
+          "type": "FlowNode",
+          "isAttr": true,
+          "isReference": true
+        },
+        {
+          "name": "targetRef",
+          "type": "FlowNode",
+          "isAttr": true,
+          "isReference": true
+        },
+        {
+          "name": "valueId",
+          "type": "String",
+          "isAttr": true
         }
       ]
     }

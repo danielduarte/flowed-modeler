@@ -125,6 +125,24 @@ function rule_task_extensionElements_params(node) {
   }, {});
 }
 
+function rule_task_extensionElements_inputOutput(node) {
+  validateNode(node, { type: 'element', name: 'camunda:inputOutput' });
+  const params = {};
+  node.content.forEach(param => {
+    if (param.content.length > 0) {
+      const paramValue = param.content[0].content[0].content;
+      if (param.attrs.group) {
+        params[param.attrs.group] = params[param.attrs.group] || {};
+        params[param.attrs.group][param.attrs.name] = paramValue;
+      } else {
+        params[param.attrs.name] = paramValue;
+      }
+    }
+  });
+
+  return params;
+}
+
 function rule_task_extensionElements_results(node) {
   validateNode(node, { type: 'element', name: 'flowed:results' });
 
@@ -148,6 +166,12 @@ function rule_task_extensionElements(node) {
   const results = node.content.filter(child => child.name === 'flowed:results');
   if (results.length > 0) {
     resolverInfo.results = rule_task_extensionElements_results(results[0]);
+  }
+
+  const extraParams = node.content.filter(child => child.name === 'camunda:inputOutput');
+  if (extraParams.length > 0) {
+    const secondaryParams = rule_task_extensionElements_inputOutput(extraParams[0]);
+    resolverInfo.params = { ...resolverInfo.params, ...secondaryParams };
   }
 
   return resolverInfo;

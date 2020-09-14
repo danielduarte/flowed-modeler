@@ -28,7 +28,7 @@ function isMap(elem) {
 }
 
 function isParameter(elem) {
-  return is(elem, 'flowed:Parameter');
+  return is(elem, 'flowed:TaskInput');
 }
 
 function ensureInputOutputSupported(element, insideConnector) {
@@ -38,9 +38,9 @@ function ensureInputOutputSupported(element, insideConnector) {
 module.exports = function(element, bpmnFactory, options, translate) {
 
   var typeInfo = {
-    'flowed:Parameter': {
-      value: 'parameter',
-      label: translate('Parameter')
+    'flowed:TaskInput': {
+      value: 'taskInput',
+      label: translate('Task Input')
     },
     'camunda:Map': {
       value: 'map',
@@ -118,7 +118,7 @@ module.exports = function(element, bpmnFactory, options, translate) {
   // parameter type //////////////////////////////////////////////////////
 
   var selectOptions = [
-    { value: 'parameter', name: translate('Parameter') },
+    { value: 'taskInput', name: translate('Task Input') },
     { value: 'text', name: translate('Text') },
     { value: 'script', name: translate('Script') },
     { value: 'list', name: translate('List') },
@@ -163,8 +163,8 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
       var parameterType = values.parameterType;
 
-      if (parameterType === 'parameter') {
-        properties.definition = createParameterTypeElem('flowed:Parameter');
+      if (parameterType === 'taskInput') {
+        properties.definition = createParameterTypeElem('flowed:TaskInput');
       }
       else if (parameterType === 'script') {
         properties.definition = createParameterTypeElem('camunda:Script');
@@ -186,16 +186,16 @@ module.exports = function(element, bpmnFactory, options, translate) {
   }));
 
 
-  // parameter value (type = parameter) ///////////////////////////////////////////////////////
+  // parameter value (type = taskInput) ///////////////////////////////////////////////////////
   var bo = element.businessObject;
   const links = bo.incoming || [];
   const linkOpts = links.map(link => {
-    const value = link.$attrs.valueId || link.id;
+    const value = link.valueId || link.id;
     return { "name": value, "value": value };
   });
 
   entries.push(entryFactory.selectBox({
-    id: idPrefix + 'parameterType-parameter',
+    id: idPrefix + 'parameterType-taskInput',
     label: translate('Input'),
     modelProperty: 'value',
     selectOptions: [{ name: '', value: undefined }, ...linkOpts],

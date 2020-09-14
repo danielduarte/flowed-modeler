@@ -59,7 +59,7 @@ function ensureOutparameterSupported(element, insideConnector) {
 module.exports = function(element, bpmnFactory, options, translate) {
 
   var TYPE_LABEL = {
-    'flowed:Parameter': translate('Parameter'),
+    'flowed:TaskInput': translate('Task Input'),
     'camunda:Map': translate('Map'),
     'camunda:List': translate('List'),
     'camunda:Script': translate('Script')
@@ -155,6 +155,8 @@ module.exports = function(element, bpmnFactory, options, translate) {
     return function(element, node, option, property, value, idx) {
       var parameter = getter(element, insideConnector, idx);
 
+      const groupName = element.businessObject.extensionElements.values.filter(node => node.$type === 'camunda:InputOutput')[0].inputParameters[idx].group;
+
       var suffix = 'Text';
 
       var definition = parameter.get('definition');
@@ -163,7 +165,7 @@ module.exports = function(element, bpmnFactory, options, translate) {
         suffix = TYPE_LABEL[type];
       }
 
-      option.text = (value || '') + ' : ' + suffix;
+      option.text = (value || '') + (groupName ? ` [${groupName}]` : '') + ' : ' + suffix;
     };
   };
 

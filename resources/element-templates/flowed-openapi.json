@@ -13,6 +13,15 @@
       "flowed:Params": {
         "properties": [
           {
+            "label": "Server Url",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "serverUrl"
+            },
+            "choicesFn": "openApi.servers"
+          },
+          {
             "label": "Path",
             "type": "Inputs",
             "binding": {
@@ -20,6 +29,14 @@
               "name": "path"
             },
             "choicesFn": "openApi.paths"
+          },
+          {
+            "label": "Path Params",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "pathParams"
+            }
           },
           {
             "label": "Method",
@@ -30,6 +47,46 @@
             },
             "choicesFn": "openApi.methods",
             "onSetPropertyFn": "openApi.methods"
+          },
+          {
+            "label": "Query",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "query"
+            }
+          },
+          {
+            "label": "Body",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "body"
+            }
+          },
+          {
+            "label": "Headers",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "headers"
+            }
+          },
+          {
+            "label": "Cookies",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "cookies"
+            }
+          },
+          {
+            "label": "Options",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "options"
+            }
           }
         ]
       },

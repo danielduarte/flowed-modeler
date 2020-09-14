@@ -15,9 +15,7 @@ export default function PaletteProvider(palette, create, elementFactory, spaceTo
   this._translate = translate;
 
   this._removedPaletteEntries = [
-    'create.start-event',
     'create.intermediate-event',
-    'create.end-event',
     'create.data-object',
     'create.data-store',
     'create.participant-expanded',

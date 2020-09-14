@@ -28,7 +28,7 @@ import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
 import signavioCompatModule from 'bpmn-js-signavio-compat';
 
-import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
+import camundaModdlePackage from '../../../../../custom/flowed-moddle/resources/camunda';
 import camundaModdleExtension from 'camunda-bpmn-moddle/lib';
 import flowedModdlePackage from '../../../../../custom/flowed-moddle/resources/flowed';
 import flowedModdleExtension from '../../../../../custom/flowed-moddle/lib';
@@ -62,8 +62,8 @@ export default class FlowedModeler extends BpmnModeler {
     super({
       ...otherOptions,
       moddleExtensions: {
-        camunda: camundaModdlePackage,
         flowed: flowedModdlePackage,
+        camunda: camundaModdlePackage,
         ...(moddleExtensions || {})
       }
     });

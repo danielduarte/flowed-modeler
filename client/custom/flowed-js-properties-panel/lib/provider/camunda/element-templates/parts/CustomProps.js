@@ -1,6 +1,7 @@
 'use strict';
 
 const Config = require('../../../../../../../src/app/util/configs');
+const OpenApi = require('./OpenApi');
 var assign = require('lodash/assign');
 
 var entryFactory = require('../../../../factory/EntryFactory'),
@@ -63,20 +64,16 @@ var IN_OUT_BINDING_TYPES = [
   CAMUNDA_IN_BUSINESS_KEY_TYPE
 ];
 
-const openApi = {
-  status: 'todo',
-  spec: null,
-  endpoint: null,
-};
-
 const onSetPropertyFns = {
   'openApi.methods': (element, bpmnFactory) => {
-    if (openApi.spec === null) { return []; }
+    if (OpenApi.openApi.spec === null) { return []; }
     const bo = element.businessObject;
     const path = bo.extensionElements.values[0].path;
     const method = bo.extensionElements.values[0].method;
-    if (typeof path === 'string' && typeof method === 'string' && openApi.spec.paths[path][method]) {
-      const opDef = openApi.spec.paths[path][method];
+    if (typeof path === 'string' && typeof method === 'string' && OpenApi.openApi.spec.paths[path][method]) {
+      const opDef = OpenApi.openApi.spec.paths[path][method];
+
+      console.log('--- openapi def ---', opDef);
 
       let inputOutput = findExtension(bo, 'camunda:InputOutput');
       if (typeof inputOutput === 'undefined') {
@@ -84,8 +81,19 @@ const onSetPropertyFns = {
         bo.extensionElements.values.push(inputOutput);
       }
 
-      const params = (opDef.parameters || []).map(p => p.name);
-      inputOutput.inputParameters = params.map(name => elementHelper.createElement('camunda:InputParameter', { name }, bo, bpmnFactory));
+      const paramTypeToGroup = {
+        query: 'query',
+        header: 'headers',
+        path: 'pathParams',
+        cookie: 'cookies',
+      };
+
+      inputOutput.inputParameters = (opDef.parameters || []).map(
+        param => elementHelper.createElement('camunda:InputParameter', {
+          name: param.name,
+          group: paramTypeToGroup[param.in],
+        }, bo, bpmnFactory)
+      );
     }
   },
 };
@@ -106,21 +114,20 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
     return [];
   }
 
-  const getOpenApi = async () => {
-    const response = await fetch(Config.get('openapi.endpoint'));
-    return await response.json();
-  };
-
   const choicesFns = {
+    'openApi.servers': () => {
+      if (OpenApi.openApi.spec === null) { return []; }
+      return (OpenApi.openApi.spec.servers || []).map(server => ({ "name": server.url, "value": server.url }));
+    },
     'openApi.paths': () => {
-      if (openApi.spec === null) { return []; }
-      return (openApi.spec !== null && Object.keys(openApi.spec.paths) || []).map(path => ({ "name": path, "value": path }));
+      if (OpenApi.openApi.spec === null) { return []; }
+      return (Object.keys(OpenApi.openApi.spec.paths) || []).map(path => ({ "name": path, "value": path }));
     },
     'openApi.methods': (element) => {
-      if (openApi.spec === null) { return []; }
+      if (OpenApi.openApi.spec === null) { return []; }
       const path = element.businessObject.extensionElements.values[0].path;
       if (typeof path !== 'undefined') {
-        const pathDef = openApi.spec.paths[path];
+        const pathDef = OpenApi.openApi.spec.paths[path];
         if (typeof pathDef !== 'undefined') {
           return Object.entries(pathDef).map(([method, opDef]) => ({ "name": `${method.toUpperCase()} (${opDef.operationId})`, "value": method }));
         }
@@ -167,21 +174,9 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       const links = bo[propertyType === 'Inputs' ? 'incoming' : 'outgoing'] || [];
 
       // Invalidate OpenApi spec cache if endpoint changed
-      const currentEndpoint = Config.get('openapi.endpoint');
-      if (currentEndpoint !== openApi.endpoint) {
-        openApi.endpoint = currentEndpoint;
-        openApi.status = 'todo';
-        openApi.spec = null;
-      }
+      OpenApi.checkNewEndpoint();
 
-      if (openApi.status === 'todo') {
-        openApi.status = 'pending';
-        getOpenApi().then(openapi => {
-          openApi.status = 'done';
-          openApi.spec = openapi;
-          redraw();
-        });
-      }
+      OpenApi.requestSpec().then(refresh => { if (refresh) { redraw() } });
 
       const fixedOpts = [
         { name: '-- Empty --'  , value: '' },
@@ -190,7 +185,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       ];
 
       const linkOpts = links.map(link => {
-        const value = link.$attrs.valueId || link.id;
+        const value = link.valueId || link.id;
         return { "name": value, "value": value };
       });
 
