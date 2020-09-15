@@ -6,20 +6,28 @@ A modeling solution for [Flowed](https://danielduarte.github.io/flowed).
 
 Based on [Camunda Modeler](https://camunda.com/products/modeler/) and [bpmn.io](http://bpmn.io).
 
+## Features
+
+* Design flows with a visual easy-to-use UI
+* Open/save flows from/to files
+* Deploy flows to a Flowed server
+* OpenApi integration and autocompletion
+
+
 ## Resources
 
-* [Changelog](./CHANGELOG.md)
-* [Download](https://camunda.com/download/modeler/) (see also [nightly builds](https://downloads.camunda.cloud/release/camunda-modeler/nightly/))
-* [Give Feedback](https://forum.camunda.org/c/modeler)
-* [Report a Bug](https://github.com/camunda/camunda-modeler/issues)
-* [User Documentation](https://docs.camunda.org/manual/latest/modeler/camunda-modeler/)
+* [Changelog](#) (coming soon)
+* [Download](#) (coming soon)
+* [Give Feedback](#) (coming soon)
+* [Report a Bug](https://github.com/danielduarte/flowed-modeler/issues)
+* [User Documentation](https://github.com/danielduarte/flowed-modeler/blob/flowed_develop/README.md)
 
 
 ## Building the Application
 
 ```sh
-# checkout a tag
-git checkout v1.1.0
+# checkout a branch
+git checkout flowed_develop
 
 # install dependencies
 npm install

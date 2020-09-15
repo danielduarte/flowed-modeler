@@ -10,7 +10,7 @@
 
 import AuthTypes from '../../shared/AuthTypes';
 
-import { default as CamundaAPI, ApiErrorMessages } from '../../shared/CamundaAPI';
+import { default as FlowedApi, ApiErrorMessages } from '../../shared/FlowedApi';
 
 import EndpointURLValidator from './EndpointURLValidator';
 
@@ -144,7 +144,7 @@ export default class DeploymentConfigValidator {
 
   validateConnection = async endpoint => {
 
-    const api = new CamundaAPI(endpoint);
+    const api = new FlowedApi(endpoint);
 
     try {
       await api.checkConnection();

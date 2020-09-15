@@ -156,7 +156,7 @@ export default class DeploymentConfigValidator {
   }
 
   validateConnectionWithoutCredentials = async (url) => {
-    this.lastConnectionCheckID ++;
+    this.lastConnectionCheckID++;
     const lastConnectionCheckID = this.lastConnectionCheckID;
     const result = await this.validateConnection({ url });
 

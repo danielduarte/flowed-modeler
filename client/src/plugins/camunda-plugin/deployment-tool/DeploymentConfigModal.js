@@ -261,7 +261,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
                 <Modal.Title>
                   {
-                    title || 'Deploy Diagram'
+                    title || 'Deploy Flow'
                   }
                 </Modal.Title>
 
@@ -273,29 +273,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
                       </p>
                     )
                   }
-                  <fieldset>
-                    <div className="fields">
-
-                      <Field
-                        name="deployment.name"
-                        component={ TextInput }
-                        label="Deployment Name"
-                        fieldError={ fieldError }
-                        validate={ (value) => {
-                          return validator.validateDeploymentName(value, this.isOnBeforeSubmit);
-                        } }
-                        autoFocus
-                      />
-
-                      <Field
-                        name="deployment.tenantId"
-                        component={ TextInput }
-                        fieldError={ fieldError }
-                        hint="Optional"
-                        label="Tenant ID"
-                      />
-                    </div>
-                  </fieldset>
 
                   <fieldset>
                     <legend>
@@ -318,8 +295,8 @@ export default class DeploymentConfigModal extends React.PureComponent {
                             (code) => { this.externalErrorCodeCache = code; }
                           );
                         } }
-                        label="REST Endpoint"
-                        hint="Should point to a running Camunda Engine REST API endpoint."
+                        label="Flowed Endpoint"
+                        hint="Should point to a running Flowed Server endpoint."
                       />
 
                       {

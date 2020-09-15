@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import PlayIcon from 'icons/Play.svg';
 
-import CamundaAPI from '../shared/CamundaAPI';
+import FlowedApi from '../shared/FlowedApi';
 
 import StartInstanceConfigModal from './StartInstanceConfigModal';
 
@@ -108,7 +108,7 @@ export default class StartInstanceTool extends PureComponent {
 
   async checkConnection(endpoint) {
 
-    const api = new CamundaAPI(endpoint);
+    const api = new FlowedApi(endpoint);
 
     try {
       await api.checkConnection();
@@ -345,7 +345,7 @@ export default class StartInstanceTool extends PureComponent {
 
   startWithConfiguration(configuration, processDefinition, endpoint) {
 
-    const api = new CamundaAPI(endpoint);
+    const api = new FlowedApi(endpoint);
 
     return api.startInstance(processDefinition, configuration);
   }

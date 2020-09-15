@@ -31,14 +31,6 @@
             "choicesFn": "openApi.paths"
           },
           {
-            "label": "Path Params",
-            "type": "Inputs",
-            "binding": {
-              "type": "property",
-              "name": "pathParams"
-            }
-          },
-          {
             "label": "Method",
             "type": "Inputs",
             "binding": {
@@ -49,19 +41,27 @@
             "onSetPropertyFn": "openApi.methods"
           },
           {
-            "label": "Query",
-            "type": "Inputs",
-            "binding": {
-              "type": "property",
-              "name": "query"
-            }
-          },
-          {
             "label": "Body",
             "type": "Inputs",
             "binding": {
               "type": "property",
               "name": "body"
+            }
+          },
+          {
+            "label": "Path Params",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "pathParams"
+            }
+          },
+          {
+            "label": "Query",
+            "type": "Inputs",
+            "binding": {
+              "type": "property",
+              "name": "query"
             }
           },
           {

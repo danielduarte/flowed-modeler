@@ -10,10 +10,10 @@
 
 /* global sinon */
 
-import CamundaAPI from '../CamundaAPI';
+import FlowedApi from '../FlowedApi';
 
 
-describe('<CamundaAPI>', () => {
+describe('<FlowedApi>', () => {
 
   /**
    * @type {sinon.SinonStub<fetch>}
@@ -44,7 +44,7 @@ describe('<CamundaAPI>', () => {
     it('should deploy diagram', async () => {
 
       // given
-      const api = createCamundaAPI({
+      const api = createFlowedApi({
         url: 'http://foo'
       });
 
@@ -57,7 +57,7 @@ describe('<CamundaAPI>', () => {
       expect(result).to.exist;
 
       expectFetched(fetchSpy, {
-        url: 'http://foo/deployment/create'
+        url: 'http://foo/flows'
       });
     });
 
@@ -70,7 +70,7 @@ describe('<CamundaAPI>', () => {
         tenantId: '111'
       };
 
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       fetchSpy.resolves(new Response());
 
@@ -85,7 +85,7 @@ describe('<CamundaAPI>', () => {
     it('should deploy with basic auth', async () => {
 
       // given
-      const api = createCamundaAPI({
+      const api = createFlowedApi({
         username: 'FOO',
         password: 'BAR',
         authType: 'basic'
@@ -111,7 +111,7 @@ describe('<CamundaAPI>', () => {
     it('should deploy with bearer token', async () => {
 
       // given
-      const api = createCamundaAPI({
+      const api = createFlowedApi({
         token: 'FOO',
         authType: 'bearer'
       });
@@ -136,7 +136,7 @@ describe('<CamundaAPI>', () => {
     it('should throw when fetch fails', async () => {
 
       // given
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       // when
       fetchSpy.rejects(new TypeError('Failed to fetch'));
@@ -159,7 +159,7 @@ describe('<CamundaAPI>', () => {
     it('should throw when response is not ok', async () => {
 
       // given
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       fetchSpy.resolves(new Response({ ok: false }));
 
@@ -180,7 +180,7 @@ describe('<CamundaAPI>', () => {
     it('should handle failed response with non-JSON body', async () => {
 
       // given
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       fetchSpy.resolves(new Response({
         ok: false,
@@ -210,7 +210,7 @@ describe('<CamundaAPI>', () => {
     it('should check server connection', async () => {
 
       // given
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       fetchSpy.resolves(new Response());
 
@@ -222,7 +222,7 @@ describe('<CamundaAPI>', () => {
     it('should throw when fetch fails', async () => {
 
       // given
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       fetchSpy.rejects(new TypeError('Failed to fetch'));
 
@@ -244,7 +244,7 @@ describe('<CamundaAPI>', () => {
     it('should throw when response is not ok', async () => {
 
       // given
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       fetchSpy.resolves(new Response({ ok: false }));
 
@@ -266,7 +266,7 @@ describe('<CamundaAPI>', () => {
     it('should handle failed response with non-JSON body', async () => {
 
       // given
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       fetchSpy.resolves(new Response({
         ok: false,
@@ -303,7 +303,7 @@ describe('<CamundaAPI>', () => {
       it('should abort request on timeout', async () => {
 
         // given
-        const api = createCamundaAPI();
+        const api = createFlowedApi();
 
         fetchSpy.callsFake((_, { signal }) => {
           return new Promise(resolve => {
@@ -351,7 +351,7 @@ describe('<CamundaAPI>', () => {
     it('should start process', async () => {
 
       // given
-      const api = createCamundaAPI({
+      const api = createFlowedApi({
         url: 'http://foo'
       });
 
@@ -372,7 +372,7 @@ describe('<CamundaAPI>', () => {
     it('should throw when fetch fails', async () => {
 
       // given
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       // when
       fetchSpy.rejects(new TypeError('Failed to fetch'));
@@ -395,7 +395,7 @@ describe('<CamundaAPI>', () => {
     it('should throw when response is not ok', async () => {
 
       // given
-      const api = createCamundaAPI();
+      const api = createFlowedApi();
 
       fetchSpy.resolves(new Response({ ok: false }));
 
@@ -431,9 +431,9 @@ function Response({
 }
 
 
-function createCamundaAPI(props = {}) {
+function createFlowedApi(props = {}) {
 
-  return new CamundaAPI({
+  return new FlowedApi({
     url: 'http://localhost:3000/engine-rest',
     ...props
   });

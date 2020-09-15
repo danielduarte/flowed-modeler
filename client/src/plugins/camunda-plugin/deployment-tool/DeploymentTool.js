@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import { omit } from 'min-dash';
 
-import { default as CamundaAPI, ApiErrors } from '../shared/CamundaAPI';
+import { default as FlowedApi, ApiErrors } from '../shared/FlowedApi';
 import AuthTypes from '../shared/AuthTypes';
 
 import DeploymentConfigModal from './DeploymentConfigModal';
@@ -30,11 +30,11 @@ import {
 } from '../../../app/primitives';
 
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
-const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
+const ENGINE_ENDPOINTS_CONFIG_KEY = 'flowedServerEndpoint';
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 
 const DEFAULT_ENDPOINT = {
-  url: 'http://localhost:8080/rest',
+  url: 'http://localhost:4000',
   authType: AuthTypes.basic,
   rememberCredentials: false
 };
@@ -272,7 +272,7 @@ export default class DeploymentTool extends PureComponent {
       deployment
     } = configuration;
 
-    const api = new CamundaAPI(endpoint);
+    const api = new FlowedApi(endpoint);
 
     return api.deployDiagram(tab.file, deployment);
   }

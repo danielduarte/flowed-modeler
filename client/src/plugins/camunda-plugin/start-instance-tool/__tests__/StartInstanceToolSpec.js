@@ -559,7 +559,7 @@ class TestStartInstanceTool extends StartInstanceTool {
     super(props);
   }
 
-  // removes CamundaAPI dependency
+  // removes FlowedApi dependency
   startWithConfiguration(...args) {
     return this.props.startSpy && this.props.startSpy(...args);
   }

@@ -205,7 +205,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                           );
                         } }
                         label="OpenApi Endpoint"
-                        hint="Should point to a OpenApi description in JSON format."
+                        hint="Should point to an OpenApi specification in JSON format."
                       />
                     </div>
                   </fieldset>

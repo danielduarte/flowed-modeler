@@ -24,9 +24,9 @@ import AuthTypes from '../../shared/AuthTypes';
 
 
 const CONFIG_KEY = 'deployment-tool';
-const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
+const ENGINE_ENDPOINTS_CONFIG_KEY = 'flowedServerEndpoint';
 
-const SPRING_DEFAULT_URL = 'http://localhost:8080/rest';
+const SPRING_DEFAULT_URL = 'http://localhost:4000';
 const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
 
 
@@ -389,7 +389,7 @@ class TestDeploymentTool extends DeploymentTool {
     super(props);
   }
 
-  // removes CamundaAPI dependency
+  // removes FlowedApi dependency
   deployWithConfiguration(...args) {
     return this.props.deploySpy && this.props.deploySpy(...args);
   }

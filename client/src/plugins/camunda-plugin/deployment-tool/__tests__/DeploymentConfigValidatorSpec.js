@@ -19,7 +19,7 @@ const EMPTY_USERNAME_ERROR = 'Credentials are required to connect to the server.
 const EMPTY_PASSWORD_ERROR = 'Credentials are required to connect to the server.';
 const EMPTY_TOKEN_ERROR = 'Token must not be empty.';
 const INVALID_URL_ERROR = 'Endpoint URL must start with "http://" or "https://".';
-const NON_COMPLETE_ERROR = 'Should point to a running Camunda Engine REST API.';
+const NON_COMPLETE_ERROR = 'Should point to a running Flowed Server endpoint.';
 
 const ENDPOINT_URL_FIELDNAME = 'endpoint.url';
 

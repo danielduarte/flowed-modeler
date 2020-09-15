@@ -11,13 +11,14 @@
 import AuthTypes from './AuthTypes';
 
 import debug from 'debug';
+import bpmnToFlowed from '../../../app/util/bpmnToFlowed';
 
 const FETCH_TIMEOUT = 5000;
 
-const log = debug('CamundaAPI');
+const log = debug('FlowedApi');
 
 
-export default class CamundaAPI {
+export default class FlowedApi {
 
   constructor(endpoint) {
 
@@ -27,30 +28,16 @@ export default class CamundaAPI {
   }
 
   async deployDiagram(diagram, deployment) {
-    const {
-      name,
-      tenantId
-    } = deployment;
 
-    const form = new FormData();
+    const flowBody = {
+      id: diagram.name,
+      spec: bpmnToFlowed(diagram.contents, { stringify: false }),
+    };
+    console.log('DIAGRAM CONTENTS', flowBody, diagram.contents);
 
-    form.append('deployment-name', name);
-    form.append('deployment-source', 'Camunda Modeler');
-    form.append('deploy-changed-only', 'true');
-
-    if (tenantId) {
-      form.append('tenant-id', tenantId);
-    }
-
-    const diagramName = diagram.name;
-
-    const blob = new Blob([ diagram.contents ], { type: 'text/xml' });
-
-    form.append(diagramName, blob, diagramName);
-
-    const response = await this.fetch('/deployment/create', {
+    const response = await this.fetch('/flows', {
       method: 'POST',
-      body: form
+      body: JSON.stringify(flowBody),
     });
 
     if (response.ok) {
@@ -100,8 +87,7 @@ export default class CamundaAPI {
   }
 
   async checkConnection() {
-
-    const response = await this.fetch('/deployment?maxResults=0');
+    const response = await this.fetch('/ping');
 
     if (response.ok) {
       return;
@@ -134,7 +120,8 @@ export default class CamundaAPI {
 
   getHeaders() {
     const headers = {
-      accept: 'application/json'
+      'content-type': 'application/json',
+      accept: 'application/json',
     };
 
     if (this.authentication) {
@@ -231,11 +218,11 @@ export const ApiErrors = {
 
 export const ApiErrorMessages = {
   [ NO_INTERNET_CONNECTION ]: 'Could not establish a network connection.',
-  [ CONNECTION_FAILED ]: 'Should point to a running Camunda Engine REST API.',
+  [ CONNECTION_FAILED ]: 'Should point to a running Flowed Server endpoint.',
   [ DIAGRAM_PARSE_ERROR ]: 'Server could not parse the diagram. Please check log for errors.',
   [ UNAUTHORIZED ]: 'Credentials do not match with the server.',
   [ FORBIDDEN ]: 'This user is not permitted to deploy. Please use different credentials or get this user enabled to deploy.',
-  [ NOT_FOUND ]: 'Should point to a running Camunda Engine REST API.',
+  [ NOT_FOUND ]: 'Should point to a running Flowed Server endpoint.',
   [ INTERNAL_SERVER_ERROR ]: 'Camunda is reporting an error. Please check the server status.',
   [ UNAVAILABLE_ERROR ]: 'Camunda is reporting an error. Please check the server status.'
 };
