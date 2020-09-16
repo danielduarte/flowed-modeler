@@ -236,8 +236,8 @@ export const ApiErrorMessages = {
   [ UNAUTHORIZED ]: 'Credentials do not match with the server.',
   [ FORBIDDEN ]: 'This user is not permitted to deploy. Please use different credentials or get this user enabled to deploy.',
   [ NOT_FOUND ]: 'Should point to an OpenApi specification in JSON format.',
-  [ INTERNAL_SERVER_ERROR ]: 'Camunda is reporting an error. Please check the server status.',
-  [ UNAVAILABLE_ERROR ]: 'Camunda is reporting an error. Please check the server status.'
+  [ INTERNAL_SERVER_ERROR ]: 'Flowed Server reported an error. Please check the server status.',
+  [ UNAVAILABLE_ERROR ]: 'Flowed Server reported an error. Please check the server status.'
 };
 
 export class ConnectionError extends Error {

@@ -21,21 +21,18 @@ const log = debug('FlowedApi');
 export default class FlowedApi {
 
   constructor(endpoint) {
-
     this.baseUrl = normalizeBaseURL(endpoint.url);
-
     this.authentication = this.getAuthentication(endpoint);
   }
 
-  async deployDiagram(diagram, deployment) {
+  async deployDiagram(diagram) {
 
     const flowBody = {
       id: diagram.name,
       spec: bpmnToFlowed(diagram.contents, { stringify: false }),
     };
-    console.log('DIAGRAM CONTENTS', flowBody, diagram.contents);
 
-    const response = await this.fetch('/flows', {
+    const response = await this.fetch('/flows?upsert=true', {
       method: 'POST',
       body: JSON.stringify(flowBody),
     });
@@ -223,8 +220,8 @@ export const ApiErrorMessages = {
   [ UNAUTHORIZED ]: 'Credentials do not match with the server.',
   [ FORBIDDEN ]: 'This user is not permitted to deploy. Please use different credentials or get this user enabled to deploy.',
   [ NOT_FOUND ]: 'Should point to a running Flowed Server endpoint.',
-  [ INTERNAL_SERVER_ERROR ]: 'Camunda is reporting an error. Please check the server status.',
-  [ UNAVAILABLE_ERROR ]: 'Camunda is reporting an error. Please check the server status.'
+  [ INTERNAL_SERVER_ERROR ]: 'Flowed Server reported an error. Please check the server status.',
+  [ UNAVAILABLE_ERROR ]: 'Flowed Server reported an error. Please check the server status.'
 };
 
 export class ConnectionError extends Error {
@@ -253,7 +250,7 @@ export class DeploymentError extends Error {
       getNetworkErrorCode(response)
     );
 
-    this.details = ApiErrorMessages[this.code];
+    this.details = body && body.error && body.error.message || ApiErrorMessages[this.code];
 
     this.problems = body && body.message;
   }

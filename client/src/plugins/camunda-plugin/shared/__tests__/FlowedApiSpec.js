@@ -33,11 +33,7 @@ describe('<FlowedApi>', () => {
 
     const diagram = {
       name: 'diagram',
-      contents: 'xml'
-    };
-
-    const deployment = {
-      name: 'TEST NAME'
+      contents: '<?xml version="1.0"?><bpmn:definitions><bpmn:process></bpmn:process></bpmn:definitions>'
     };
 
 
@@ -51,87 +47,15 @@ describe('<FlowedApi>', () => {
       // when
       fetchSpy.resolves(new Response());
 
-      const result = await api.deployDiagram(diagram, deployment);
+      const result = await api.deployDiagram(diagram);
 
       // then
       expect(result).to.exist;
 
       expectFetched(fetchSpy, {
-        url: 'http://foo/flows'
+        url: 'http://foo/flows?upsert=true'
       });
     });
-
-
-    it('should deploy diagram with tenant ID', async () => {
-
-      // given
-      const deployment = {
-        name: 'FOO',
-        tenantId: '111'
-      };
-
-      const api = createFlowedApi();
-
-      fetchSpy.resolves(new Response());
-
-      // when
-      const result = await api.deployDiagram(diagram, deployment);
-
-      // then
-      expect(result).to.exist;
-    });
-
-
-    it('should deploy with basic auth', async () => {
-
-      // given
-      const api = createFlowedApi({
-        username: 'FOO',
-        password: 'BAR',
-        authType: 'basic'
-      });
-
-      fetchSpy.resolves(new Response());
-
-      // when
-      const result = await api.deployDiagram(diagram, deployment);
-
-      // then
-      expect(result).to.exist;
-
-      expectFetched(fetchSpy, {
-        headers: {
-          accept: 'application/json',
-          authorization: 'Basic Rk9POkJBUg=='
-        }
-      });
-    });
-
-
-    it('should deploy with bearer token', async () => {
-
-      // given
-      const api = createFlowedApi({
-        token: 'FOO',
-        authType: 'bearer'
-      });
-
-      fetchSpy.resolves(new Response());
-
-      // when
-      const result = await api.deployDiagram(diagram, deployment);
-
-      // then
-      expect(result).to.exist;
-
-      expectFetched(fetchSpy, {
-        headers: {
-          accept: 'application/json',
-          authorization: 'Bearer FOO'
-        }
-      });
-    });
-
 
     it('should throw when fetch fails', async () => {
 
@@ -145,7 +69,7 @@ describe('<FlowedApi>', () => {
       let error;
 
       try {
-        await api.deployDiagram(diagram, deployment);
+        await api.deployDiagram(diagram);
       } catch (e) {
         error = e;
       } finally {
@@ -167,7 +91,7 @@ describe('<FlowedApi>', () => {
       let error;
 
       try {
-        await api.deployDiagram(diagram, deployment);
+        await api.deployDiagram(diagram);
       } catch (e) {
         error = e;
       }
@@ -192,7 +116,7 @@ describe('<FlowedApi>', () => {
       let error;
 
       try {
-        await api.deployDiagram(diagram, deployment);
+        await api.deployDiagram(diagram);
       } catch (e) {
         error = e;
       } finally {
@@ -434,7 +358,7 @@ function Response({
 function createFlowedApi(props = {}) {
 
   return new FlowedApi({
-    url: 'http://localhost:3000/engine-rest',
+    url: 'http://localhost:4001/test/',
     ...props
   });
 

@@ -4,7 +4,7 @@ A modeling solution for [Flowed](https://danielduarte.github.io/flowed).
 
 ![Flowed Modeler](docs/screenshot.png)
 
-Based on [Camunda Modeler](https://camunda.com/products/modeler/) and [bpmn.io](http://bpmn.io).
+Based on [Camunda Modeler](https://github.com/camunda/camunda-modeler) and [bpmn.io](http://bpmn.io).
 
 ## Features
 

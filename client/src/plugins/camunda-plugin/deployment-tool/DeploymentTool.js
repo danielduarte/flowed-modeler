@@ -269,12 +269,11 @@ export default class DeploymentTool extends PureComponent {
 
     const {
       endpoint,
-      deployment
     } = configuration;
 
     const api = new FlowedApi(endpoint);
 
-    return api.deployDiagram(tab.file, deployment);
+    return api.deployDiagram(tab.file);
   }
 
   canDeployWithConfiguration(configuration) {
