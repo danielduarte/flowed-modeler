@@ -60,9 +60,11 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
   var TYPE_LABEL = {
     'flowed:TaskInput': translate('Task Input'),
-    'camunda:Map': translate('Map'),
-    'camunda:List': translate('List'),
-    'camunda:Script': translate('Script')
+    'flowed:JsonValue': translate('JSON Value'),
+    'flowed:Transform': translate('Transform'),
+    // 'camunda:Map': translate('Map'),
+    // 'camunda:List': translate('List'),
+    // 'camunda:Script': translate('Script')
   };
 
   options = options || {};

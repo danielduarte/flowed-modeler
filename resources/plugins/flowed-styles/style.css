@@ -147,3 +147,8 @@ input {
   top: 10px;
   right: 10px;
 }
+
+/* Property panel: Input mapping fields of type 'transform' */
+#camunda-parameterType-transform {
+  height: 12em;
+}

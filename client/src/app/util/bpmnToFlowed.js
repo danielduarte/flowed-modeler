@@ -23,15 +23,10 @@ module.exports = function bpmnToFlowed(xml, options) {
 function rule_bpmn(node) {
   validateNode(node, { type: 'xml' });
 
-  const { tasksList, warnings } = rule_definitions(node.content[0]);
-  const tasks = tasksList.reduce((acc, t) => {
-    acc[t.code] = t;
-    delete t.code;
-    return acc;
-  }, {});
+  const { tasks, warnings } = rule_definitions(node.content[0]);
 
   return {
-    spec: tasksList.length > 0 ? { tasks } : {},
+    spec: tasks,
     warnings,
   };
 }
@@ -51,13 +46,13 @@ function rule_definitions(node) {
   }
 
   return {
-    tasksList: rule_process(processNodes[0]),
+    tasks: rule_process(processNodes[0]),
     warnings,
   };
 }
 
 function rule_process(node) {
-  validateNode(node, { type: 'element', name: 'bpmn:process' });
+  validateNode(node, { type: 'element', name: ['bpmn:process', 'bpmn:subProcess'] });
 
   const sequences = node
     .content
@@ -75,7 +70,7 @@ function rule_process(node) {
       byTo: {},
     });
 
-  const taskList = node
+  const simpleTaskList = node
     .content
     .filter(child => child.name === 'bpmn:task')
     .map(node => rule_task(node, sequences));
@@ -90,7 +85,14 @@ function rule_process(node) {
     .filter(child => child.name === 'bpmn:subProcess')
     .map(node => rule_subProcess(node, sequences));
 
-  return [...taskList, ...condTaskList, ...subflowTaskList];
+  const taskList = [...simpleTaskList, ...condTaskList, ...subflowTaskList];
+  const tasks = taskList.reduce((acc, t) => {
+    acc[t.code] = t;
+    delete t.code;
+    return acc;
+  }, {});
+
+  return taskList.length > 0 ? { tasks } : {};
 }
 
 function rule_sequenceFlow(node) {
@@ -130,7 +132,15 @@ function rule_task_extensionElements_inputOutput(node) {
   const params = {};
   node.content.forEach(param => {
     if (param.content.length > 0) {
-      const paramValue = param.content[0].content[0].content;
+      let paramValue = param.content[0].content[0].content;
+
+      const paramType = param.content[0].name;
+      if (paramType === 'flowed:jsonValue') {
+        paramValue = { value: paramValue };
+      } else if (paramType === 'flowed:transform') {
+        paramValue = { transform: paramValue };
+      }
+
       if (param.attrs.group) {
         params[param.attrs.group] = params[param.attrs.group] || { transform: {} };
         params[param.attrs.group].transform[param.attrs.name] = `{{${paramValue}}}`;
@@ -237,8 +247,6 @@ function rule_exclusiveGateway(node, sequences) {
 
   if (sequences.byTo[task.code]) {
     task.requires = [...new Set(sequences.byTo[task.code].map(seq => seq.code))];
-
-
   }
 
   if (sequences.byFrom[task.code]) {
@@ -287,26 +295,72 @@ function rule_subProcess(node, sequences) {
     task.provides = [...new Set(sequences.byFrom[task.code].map(seq => seq.code))];
   }
 
-  task.resolver= {
+  const subflowResolver = {
     name: 'flowed::SubFlow',
     params: {
       flowSpec: {},
       flowParams: {},
       flowExpectedResults: [],
-      flowResolvers: {},
     }
   };
+
+  const loopNodes = node.content.filter(child => child.name === 'bpmn:multiInstanceLoopCharacteristics');
+  if (loopNodes.length > 0) {
+    const loop = loopNodes[0];
+
+    subflowResolver.params.flowExpectedResults = { value: [loop.attrs['camunda:outElementVariable']] };
+    subflowResolver.params.flowParams = { transform: { [loop.attrs['camunda:elementVariable']]: `{{${loop.attrs['camunda:elementVariable']}}}` } };
+    subflowResolver.params.uniqueResult = { value: loop.attrs['camunda:outElementVariable'] };
+
+    subflowResolver.params.flowSpec = {
+      value: rule_process(node),
+    };
+
+    subflowResolver.results = {
+      flowResult: 'innerResults',
+    };
+
+    task.resolver= {
+      name: 'flowed::Loop',
+      params: {
+        inCollection: loop.attrs['camunda:collection'],
+        inItemName: { value: loop.attrs['camunda:elementVariable'] },
+        outItemName: { value: 'innerResults' },
+        subtask: {
+          value:{
+            requires: [loop.attrs['camunda:elementVariable']],
+            provides:[loop.attrs['camunda:outElementVariable']],
+            resolver: subflowResolver
+          }
+        },
+      },
+      results: {
+        outCollection: loop.attrs['camunda:outCollection'],
+      }
+    };
+  } else {
+    task.resolver = subflowResolver;
+  }
 
   return task;
 }
 
 function validateNode(node, expectedFields) {
-  Object.entries(expectedFields).forEach(([field, expectedValue]) => {
+  Object.entries(expectedFields).forEach(([field, expectedValues]) => {
     if (!node.hasOwnProperty(field)) {
       throw new Error(`Missing field "${field}" in node.`);
     }
-    if (node[field] !== expectedValue) {
-      throw new Error(`Expected node ${field} ${expectedValue} but found ${node[field]}.`);
+    if (!Array.isArray(expectedValues)) {
+      expectedValues = [expectedValues];
+    }
+    let found = false;
+    for (const expectedValue of expectedValues) {
+      if (node[field] === expectedValue) {
+        found = true;
+      }
+    }
+    if (!found) {
+      throw new Error(`Expected node field "${field}" with one of the values [${expectedValues.join(', ')}] but found the value "${node[field]}".`);
     }
   });
 }

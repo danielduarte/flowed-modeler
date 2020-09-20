@@ -6,8 +6,7 @@
         "params": {
           "flowSpec": {},
           "flowParams": {},
-          "flowExpectedResults": [],
-          "flowResolvers": {}
+          "flowExpectedResults": []
         }
       }
     }

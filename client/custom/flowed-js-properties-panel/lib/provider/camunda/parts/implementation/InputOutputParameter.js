@@ -31,6 +31,14 @@ function isParameter(elem) {
   return is(elem, 'flowed:TaskInput');
 }
 
+function isJsonValue(elem) {
+  return is(elem, 'flowed:JsonValue');
+}
+
+function isTransform(elem) {
+  return is(elem, 'flowed:Transform');
+}
+
 function ensureInputOutputSupported(element, insideConnector) {
   return inputOutputHelper.isInputOutputSupported(element, insideConnector);
 }
@@ -42,18 +50,26 @@ module.exports = function(element, bpmnFactory, options, translate) {
       value: 'taskInput',
       label: translate('Task Input')
     },
-    'camunda:Map': {
-      value: 'map',
-      label: translate('Map')
+    'flowed:JsonValue': {
+      value: 'jsonValue',
+      label: translate('JSON Value')
     },
-    'camunda:List': {
-      value: 'list',
-      label: translate('List')
+    'flowed:Transform': {
+      value: 'transform',
+      label: translate('Transform')
     },
-    'camunda:Script': {
-      value: 'script',
-      label: translate('Script')
-    }
+    // 'camunda:Map': {
+    //   value: 'map',
+    //   label: translate('Map')
+    // },
+    // 'camunda:List': {
+    //   value: 'list',
+    //   label: translate('List')
+    // },
+    // 'camunda:Script': {
+    //   value: 'script',
+    //   label: translate('Script')
+    // }
   };
 
   options = options || {};
@@ -119,10 +135,12 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
   var selectOptions = [
     { value: 'taskInput', name: translate('Task Input') },
-    { value: 'text', name: translate('Text') },
-    { value: 'script', name: translate('Script') },
-    { value: 'list', name: translate('List') },
-    { value: 'map', name: translate('Map') }
+    { value: 'jsonValue', name: translate('JSON Value') },
+    { value: 'transform', name: translate('Transform') },
+    // { value: 'text', name: translate('Text') },
+    // { value: 'script', name: translate('Script') },
+    // { value: 'list', name: translate('List') },
+    // { value: 'map', name: translate('Map') }
   ];
 
   entries.push(entryFactory.selectBox({
@@ -166,15 +184,21 @@ module.exports = function(element, bpmnFactory, options, translate) {
       if (parameterType === 'taskInput') {
         properties.definition = createParameterTypeElem('flowed:TaskInput');
       }
-      else if (parameterType === 'script') {
-        properties.definition = createParameterTypeElem('camunda:Script');
+      else if (parameterType === 'jsonValue') {
+        properties.definition = createParameterTypeElem('flowed:JsonValue');
       }
-      else if (parameterType === 'list') {
-        properties.definition = createParameterTypeElem('camunda:List');
+      else if (parameterType === 'transform') {
+        properties.definition = createParameterTypeElem('flowed:Transform');
       }
-      else if (parameterType === 'map') {
-        properties.definition = createParameterTypeElem('camunda:Map');
-      }
+      // else if (parameterType === 'script') {
+      //   properties.definition = createParameterTypeElem('camunda:Script');
+      // }
+      // else if (parameterType === 'list') {
+      //   properties.definition = createParameterTypeElem('camunda:List');
+      // }
+      // else if (parameterType === 'map') {
+      //   properties.definition = createParameterTypeElem('camunda:Map');
+      // }
 
       return cmdHelper.updateBusinessObject(element, bo, properties);
     },
@@ -220,30 +244,79 @@ module.exports = function(element, bpmnFactory, options, translate) {
     }
   }));
 
-  // parameter value (type = text) ///////////////////////////////////////////////////////
-
+  // parameter value (type = jsonValue) ///////////////////////////////////////////////////////
   entries.push(entryFactory.textBox({
-    id : idPrefix + 'parameterType-text',
-    label : translate('Value'),
+    id : idPrefix + 'parameterType-jsonValue',
+    label : translate('JSON'),
     modelProperty: 'value',
     get: function(element, node) {
+      const selected = getSelected(element, node) || {};
+      const def = selected.definition || {};
       return {
-        value: (getSelected(element, node) || {}).value
+        value: def.value
       };
     },
 
     set: function(element, values, node) {
-      var param = getSelected(element, node);
+      const param = getSelected(element, node).definition;
       values.value = values.value || undefined;
       return cmdHelper.updateBusinessObject(element, param, values);
     },
 
     show: function(element, node) {
-      var bo = getSelected(element, node);
-      return bo && !bo.definition;
+      const bo = getSelected(element, node);
+      return bo && bo.definition && isJsonValue(bo.definition);
     }
-
   }));
+
+  // parameter value (type = transform) ///////////////////////////////////////////////////////
+  entries.push(entryFactory.textBox({
+    id : idPrefix + 'parameterType-transform',
+    label : translate('Transform Template'),
+    modelProperty: 'value',
+    get: function(element, node) {
+      const selected = getSelected(element, node) || {};
+      const def = selected.definition || {};
+      return {
+        value: def.value
+      };
+    },
+
+    set: function(element, values, node) {
+      const param = getSelected(element, node).definition;
+      values.value = values.value || undefined;
+      return cmdHelper.updateBusinessObject(element, param, values);
+    },
+
+    show: function(element, node) {
+      const bo = getSelected(element, node);
+      return bo && bo.definition && isTransform(bo.definition);
+    }
+  }));
+
+  // // parameter value (type = text) ///////////////////////////////////////////////////////
+  //
+  // entries.push(entryFactory.textBox({
+  //   id : idPrefix + 'parameterType-text',
+  //   label : translate('Value'),
+  //   modelProperty: 'value',
+  //   get: function(element, node) {
+  //     return {
+  //       value: (getSelected(element, node) || {}).value
+  //     };
+  //   },
+  //
+  //   set: function(element, values, node) {
+  //     var param = getSelected(element, node);
+  //     values.value = values.value || undefined;
+  //     return cmdHelper.updateBusinessObject(element, param, values);
+  //   },
+  //
+  //   show: function(element, node) {
+  //     var bo = getSelected(element, node);
+  //     return bo && !bo.definition;
+  //   }
+  // }));
 
 
   // parameter value (type = script) ///////////////////////////////////////////////////////

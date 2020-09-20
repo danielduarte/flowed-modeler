@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:flowed="http://flowed.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1tynti7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Flowed Modeler" exporterVersion="0.2.0-dev.20200920">
+  <bpmn:process id="get-product-with-prices" isExecutable="true">
+    <bpmn:subProcess id="subflow">
+      <bpmn:incoming>productIds</bpmn:incoming>
+      <bpmn:outgoing>products</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="productIds" camunda:elementVariable="prodId" camunda:outCollection="products" camunda:outElementVariable="product" />
+      <bpmn:task id="getProdInfo" name="Get Product Info" camunda:modelerTemplate="flowed::OpenApi">
+        <bpmn:extensionElements>
+          <flowed:params inout="">
+            <flowed:path>/products/{id}</flowed:path>
+            <flowed:method>get</flowed:method>
+            <flowed:serverUrl>http://localhost:3003</flowed:serverUrl>
+          </flowed:params>
+          <flowed:results inout="">
+            <flowed:body>prodInfo</flowed:body>
+          </flowed:results>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="id" group="pathParams">
+              <flowed:taskInput>prodId</flowed:taskInput>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:incoming>prodId1</bpmn:incoming>
+        <bpmn:outgoing>prodInfo</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:startEvent id="subStart">
+        <bpmn:outgoing>prodId1</bpmn:outgoing>
+        <bpmn:outgoing>prodId2</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="prodId1" name="prodId" sourceRef="subStart" targetRef="getProdInfo" valueId="prodId" />
+      <bpmn:endEvent id="subEnd">
+        <bpmn:incoming>product</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="prodInfo" name="prodInfo" sourceRef="getProdInfo" targetRef="merge" />
+      <bpmn:task id="getProdPrice" name="Get Price" camunda:modelerTemplate="flowed::OpenApi">
+        <bpmn:extensionElements>
+          <flowed:params inout="">
+            <flowed:path>/prices/{id}</flowed:path>
+            <flowed:method>get</flowed:method>
+            <flowed:serverUrl>http://localhost:3003</flowed:serverUrl>
+          </flowed:params>
+          <flowed:results inout="">
+            <flowed:body>prodPrice</flowed:body>
+          </flowed:results>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="id" group="pathParams">
+              <flowed:taskInput>prodId</flowed:taskInput>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:incoming>prodId2</bpmn:incoming>
+        <bpmn:outgoing>prodPrice</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="prodPrice" name="prodPrice" sourceRef="getProdPrice" targetRef="merge" />
+      <bpmn:sequenceFlow id="prodId2" sourceRef="subStart" targetRef="getProdPrice" valueId="prodId" />
+      <bpmn:task id="merge" name="Merge" camunda:modelerTemplate="flowed::Echo">
+        <bpmn:extensionElements>
+          <flowed:params inout="">
+            <flowed:in>::flowed:transform::</flowed:in>
+          </flowed:params>
+          <flowed:results inout="">
+            <flowed:out>product</flowed:out>
+          </flowed:results>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="in">
+              <flowed:transform>{{ Object.assign({}, prodInfo, prodPrice) }}</flowed:transform>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:incoming>prodPrice</bpmn:incoming>
+        <bpmn:incoming>prodInfo</bpmn:incoming>
+        <bpmn:outgoing>product</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="product" name="product" sourceRef="merge" targetRef="subEnd" />
+    </bpmn:subProcess>
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>productIds</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="productIds" name="productIds" sourceRef="start" targetRef="subflow" />
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>products</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="products" name="products" sourceRef="subflow" targetRef="end" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="get-product-with-prices">
+      <bpmndi:BPMNEdge id="val6_di" bpmnElement="products">
+        <di:waypoint x="980" y="200" />
+        <di:waypoint x="1092" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1015" y="182" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="val5_di1" bpmnElement="productIds">
+        <di:waypoint x="188" y="200" />
+        <di:waypoint x="330" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="233" y="182" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="task1_di" bpmnElement="subflow" isExpanded="true">
+        <dc:Bounds x="330" y="80" width="650" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="val5_di" bpmnElement="product">
+        <di:waypoint x="820" y="200" />
+        <di:waypoint x="912" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="848" y="182" width="37" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="val4_di" bpmnElement="prodId2">
+        <di:waypoint x="398" y="200" />
+        <di:waypoint x="454" y="200" />
+        <di:waypoint x="454" y="270" />
+        <di:waypoint x="510" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="val2_di" bpmnElement="prodPrice">
+        <di:waypoint x="610" y="270" />
+        <di:waypoint x="666" y="270" />
+        <di:waypoint x="666" y="200" />
+        <di:waypoint x="720" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="616" y="278" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="val3_di" bpmnElement="prodInfo">
+        <di:waypoint x="610" y="140" />
+        <di:waypoint x="666" y="140" />
+        <di:waypoint x="666" y="200" />
+        <di:waypoint x="720" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="619" y="122" width="41" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="val2_di1" bpmnElement="prodId1">
+        <di:waypoint x="398" y="200" />
+        <di:waypoint x="454" y="200" />
+        <di:waypoint x="454" y="140" />
+        <di:waypoint x="510" y="140" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="410" y="182" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="task2_di" bpmnElement="getProdInfo">
+        <dc:Bounds x="510" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="startEvent2_di" bpmnElement="subStart">
+        <dc:Bounds x="362" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endEvent1_di" bpmnElement="subEnd">
+        <dc:Bounds x="912" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task1_di1" bpmnElement="getProdPrice">
+        <dc:Bounds x="510" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task2_di1" bpmnElement="merge">
+        <dc:Bounds x="720" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="startEvent4_di" bpmnElement="start">
+        <dc:Bounds x="152" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endEvent2_di" bpmnElement="end">
+        <dc:Bounds x="1092" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -180,7 +180,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
 
       const fixedOpts = [
         { name: '-- Empty --'  , value: '' },
-        { name: '-- Value --'  , value: '::flowed:value::' },
+        { name: '-- Value --'  , value: '::flowed:jsonValue::' },
         { name: '-- Transform --'  , value: '::flowed:transform::' },
       ];
 
@@ -196,7 +196,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       entry = entryFactory.selectBox(entryOptions);
 
       // @todo To be used for manual values or transformations
-      // const customVal = ['::flowed:value::', '::flowed:transform::'].includes(getPropertyValue(element, p));
+      // const customVal = ['::flowed:jsonValue::', '::flowed:transform::'].includes(getPropertyValue(element, p));
       // if (customVal) {
       //   const canBeShown = !!entryOptions.show && typeof entryOptions.show === 'function';
       //   const valueEntryHtml =

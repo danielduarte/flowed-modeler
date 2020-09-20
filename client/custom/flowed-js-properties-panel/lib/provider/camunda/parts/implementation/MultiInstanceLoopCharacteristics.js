@@ -106,6 +106,17 @@ function getCollection(element) {
 }
 
 /**
+ * Get the 'camunda:outCollection' attribute value of the loop characteristics.
+ *
+ * @param {djs.model.Base} element
+ *
+ * @return {string} the 'camunda:outCollection' value
+ */
+function getOutCollection(element) {
+  return getProperty(element, 'camunda:outCollection');
+}
+
+/**
  * Get the 'camunda:elementVariable' attribute value of the loop characteristics.
  *
  * @param {djs.model.Base} element
@@ -116,6 +127,16 @@ function getElementVariable(element) {
   return getProperty(element, 'camunda:elementVariable');
 }
 
+/**
+ * Get the 'camunda:outElementVariable' attribute value of the loop characteristics.
+ *
+ * @param {djs.model.Base} element
+ *
+ * @return {string} the 'camunda:outElementVariable' value
+ */
+function getOutElementVariable(element) {
+  return getProperty(element, 'camunda:outElementVariable');
+}
 
 /**
  * Creates 'bpmn:FormalExpression' element.
@@ -195,30 +216,30 @@ module.exports = function(element, bpmnFactory, translate) {
     }
   });
 
-  // loop cardinality //////////////////////////////////////////////////////////////
+  // // loop cardinality //////////////////////////////////////////////////////////////
+  //
+  // entries.push(entryFactory.textField({
+  //   id: 'multiInstance-loopCardinality',
+  //   label: translate('Loop Cardinality'),
+  //   modelProperty: 'loopCardinality',
+  //
+  //   get: function(element, node) {
+  //     return {
+  //       loopCardinality: getLoopCardinalityValue(element)
+  //     };
+  //   },
+  //
+  //   set: function(element, values) {
+  //     return updateFormalExpression(element, 'loopCardinality', values.loopCardinality, bpmnFactory);
+  //   }
+  // }));
 
-  entries.push(entryFactory.textField({
-    id: 'multiInstance-loopCardinality',
-    label: translate('Loop Cardinality'),
-    modelProperty: 'loopCardinality',
 
-    get: function(element, node) {
-      return {
-        loopCardinality: getLoopCardinalityValue(element)
-      };
-    },
-
-    set: function(element, values) {
-      return updateFormalExpression(element, 'loopCardinality', values.loopCardinality, bpmnFactory);
-    }
-  }));
-
-
-  // collection //////////////////////////////////////////////////////////////////
+  // input collection //////////////////////////////////////////////////////////////////
 
   entries.push(entryFactory.textField({
     id: 'multiInstance-collection',
-    label: translate('Collection'),
+    label: translate('Input Collection'),
     modelProperty: 'collection',
 
     get: function(element, node) {
@@ -245,11 +266,11 @@ module.exports = function(element, bpmnFactory, translate) {
   }));
 
 
-  // element variable ////////////////////////////////////////////////////////////
+  // input collection item ////////////////////////////////////////////////////////////
 
   entries.push(entryFactory.textField({
     id: 'multiInstance-elementVariable',
-    label: translate('Element Variable'),
+    label: translate('Input Collection Item'),
     modelProperty: 'elementVariable',
 
     get: function(element, node) {
@@ -267,23 +288,76 @@ module.exports = function(element, bpmnFactory, translate) {
   }));
 
 
-  // Completion Condition //////////////////////////////////////////////////////
+  // output collection //////////////////////////////////////////////////////////////////
 
   entries.push(entryFactory.textField({
-    id: 'multiInstance-completionCondition',
-    label: translate('Completion Condition'),
-    modelProperty: 'completionCondition',
+    id: 'multiInstance-outCollection',
+    label: translate('Output Collection'),
+    modelProperty: 'outCollection',
 
-    get: function(element) {
+    get: function(element, node) {
       return {
-        completionCondition: getCompletionConditionValue(element)
+        outCollection: getOutCollection(element)
       };
     },
 
     set: function(element, values) {
-      return updateFormalExpression(element, 'completionCondition', values.completionCondition, bpmnFactory);
+      var loopCharacteristics = getLoopCharacteristics(element);
+      return cmdHelper.updateBusinessObject(element, loopCharacteristics, {
+        'camunda:outCollection': values.outCollection || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      var outCollection = getOutCollection(element);
+      var outElementVariable = getOutElementVariable(element);
+
+      if (!outCollection && outElementVariable) {
+        return { outCollection : 'Must provide a value' };
+      }
     }
   }));
+
+
+  // output collection item ////////////////////////////////////////////////////////////
+
+  entries.push(entryFactory.textField({
+    id: 'multiInstance-outElementVariable',
+    label: translate('Output Collection Item'),
+    modelProperty: 'outElementVariable',
+
+    get: function(element, node) {
+      return {
+        outElementVariable: getOutElementVariable(element)
+      };
+    },
+
+    set: function(element, values) {
+      var loopCharacteristics = getLoopCharacteristics(element);
+      return cmdHelper.updateBusinessObject(element, loopCharacteristics, {
+        'camunda:outElementVariable': values.outElementVariable || undefined
+      });
+    }
+  }));
+
+
+  // // Completion Condition //////////////////////////////////////////////////////
+  //
+  // entries.push(entryFactory.textField({
+  //   id: 'multiInstance-completionCondition',
+  //   label: translate('Completion Condition'),
+  //   modelProperty: 'completionCondition',
+  //
+  //   get: function(element) {
+  //     return {
+  //       completionCondition: getCompletionConditionValue(element)
+  //     };
+  //   },
+  //
+  //   set: function(element, values) {
+  //     return updateFormalExpression(element, 'completionCondition', values.completionCondition, bpmnFactory);
+  //   }
+  // }));
 
   return entries;
 

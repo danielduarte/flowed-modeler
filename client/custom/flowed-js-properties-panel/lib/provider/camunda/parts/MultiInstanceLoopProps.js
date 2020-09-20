@@ -29,18 +29,18 @@ module.exports = function(group, element, bpmnFactory, translate) {
   // multi instance properties
   group.entries = group.entries.concat(multiInstanceLoopCharacteristics(element, bpmnFactory, translate));
 
-  // async continuation ///////////////////////////////////////////////////////
-  group.entries = group.entries.concat(asyncContinuation(element, bpmnFactory, {
-    getBusinessObject: getLoopCharacteristics,
-    idPrefix: 'multiInstance-',
-    labelPrefix: translate('Multi Instance ')
-  }, translate));
-
-
-  // retry time cycle //////////////////////////////////////////////////////////
-  group.entries = group.entries.concat(jobRetryTimeCycle(element, bpmnFactory, {
-    getBusinessObject: getLoopCharacteristics,
-    idPrefix: 'multiInstance-',
-    labelPrefix: translate('Multi Instance ')
-  }, translate));
+  // // async continuation ///////////////////////////////////////////////////////
+  // group.entries = group.entries.concat(asyncContinuation(element, bpmnFactory, {
+  //   getBusinessObject: getLoopCharacteristics,
+  //   idPrefix: 'multiInstance-',
+  //   labelPrefix: translate('Multi Instance ')
+  // }, translate));
+  //
+  //
+  // // retry time cycle //////////////////////////////////////////////////////////
+  // group.entries = group.entries.concat(jobRetryTimeCycle(element, bpmnFactory, {
+  //   getBusinessObject: getLoopCharacteristics,
+  //   idPrefix: 'multiInstance-',
+  //   labelPrefix: translate('Multi Instance ')
+  // }, translate));
 };

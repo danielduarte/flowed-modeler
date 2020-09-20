@@ -132,6 +132,42 @@
       ]
     },
     {
+      "name": "flowed:JsonValue",
+      "superClass": [
+        "camunda:InputOutputParameterDefinition"
+      ],
+      "properties": [
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "isBody": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "flowed:Transform",
+      "superClass": [
+        "camunda:InputOutputParameterDefinition"
+      ],
+      "properties": [
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "isBody": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
       "name": "bpmn:SequenceFlow",
       "superClass": [
         "bpmn:FlowElement"

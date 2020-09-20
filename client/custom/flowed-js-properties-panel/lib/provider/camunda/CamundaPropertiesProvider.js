@@ -189,7 +189,7 @@ function createGeneralTabGroups(
 
   var multiInstanceGroup = {
     id: 'multiInstance',
-    label: translate('Multi Instance'),
+    label: translate('Loop Configuration'),
     entries: []
   };
   multiInstanceProps(multiInstanceGroup, element, bpmnFactory, translate);
