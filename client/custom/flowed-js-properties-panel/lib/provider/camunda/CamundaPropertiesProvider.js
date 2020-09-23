@@ -132,7 +132,7 @@ var getListenerLabel = function(param, translate) {
   return '';
 };
 
-var PROCESS_KEY_HINT = 'This maps to the process definition key.';
+var PROCESS_KEY_HINT = 'The flow unique identifier.';
 var TASK_KEY_HINT = 'This maps to the task definition key.';
 
 function createGeneralTabGroups(
@@ -166,8 +166,8 @@ function createGeneralTabGroups(
   idProps(generalGroup, element, translate, idOptions);
   nameProps(generalGroup, element, bpmnFactory, canvas, translate);
   processProps(generalGroup, element, translate, processOptions);
-  versionTag(generalGroup, element, translate);
-  executableProps(generalGroup, element, translate);
+  // versionTag(generalGroup, element, translate);
+  // executableProps(generalGroup, element, translate);
   elementTemplateChooserProps(generalGroup, element, elementTemplates, translate);
 
   var customFieldsGroups = elementTemplateCustomProps(element, elementTemplates, bpmnFactory, translate, redraw);
@@ -238,12 +238,12 @@ function createGeneralTabGroups(
     groups.push(group);
   });
   groups.push(detailsGroup);
-  groups.push(externalTaskGroup);
+  // groups.push(externalTaskGroup);
   groups.push(multiInstanceGroup);
-  groups.push(jobConfigurationGroup);
-  groups.push(candidateStarterGroup);
-  groups.push(historyTimeToLiveGroup);
-  groups.push(tasklistGroup);
+  // groups.push(jobConfigurationGroup);
+  // groups.push(candidateStarterGroup);
+  // groups.push(historyTimeToLiveGroup);
+  // groups.push(tasklistGroup);
 
   return groups;
 }
@@ -429,7 +429,7 @@ function CamundaPropertiesProvider(
       generalTab,
       variablesTab,
       connectorTab,
-      formsTab,
+      // formsTab,
       inputOutputTab,
       fieldInjectionsTab,
     ];

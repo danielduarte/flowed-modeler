@@ -17,7 +17,7 @@ module.exports = function(element, options, translate) {
 
   options = options || {};
   var id = options.id || 'name',
-      label = options.label || translate('Name'),
+      label = options.label || translate('Title'),
       modelProperty = options.modelProperty || 'name';
 
   var nameEntry = entryFactory.textBox({

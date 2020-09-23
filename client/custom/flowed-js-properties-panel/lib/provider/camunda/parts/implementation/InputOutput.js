@@ -155,9 +155,11 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
   var setOptionLabelValue = function(getter) {
     return function(element, node, option, property, value, idx) {
-      var parameter = getter(element, insideConnector, idx);
+      const parameter = getter(element, insideConnector, idx);
+      const inOutPropName = parameter.$type === 'camunda:InputParameter' ? 'inputParameters' : 'outputParameters';
 
-      const groupName = element.businessObject.extensionElements.values.filter(node => node.$type === 'camunda:InputOutput')[0].inputParameters[idx].group;
+      const inOut = element.businessObject.extensionElements.values.filter(node => node.$type === 'camunda:InputOutput')[0];
+      const groupName = inOut[inOutPropName][idx].group;
 
       var suffix = 'Text';
 

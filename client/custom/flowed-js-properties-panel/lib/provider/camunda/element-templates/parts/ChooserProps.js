@@ -27,7 +27,7 @@ module.exports = function(group, element, elementTemplates, translate) {
   // select element template (via dropdown)
   group.entries.push(entryFactory.selectBox({
     id: 'elementTemplate-chooser',
-    label: translate('Element Template'),
+    label: is(element, 'bpmn:Task') ? translate('Resolver') : translate('Type'),
     modelProperty: 'camunda:modelerTemplate',
     selectOptions: options,
     set: function(element, properties) {
