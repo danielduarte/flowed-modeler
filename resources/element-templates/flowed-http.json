@@ -16,7 +16,7 @@
             "label": "Url",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "url"
             }
           },
@@ -24,7 +24,7 @@
             "label": "Method",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "method"
             }
           },
@@ -32,7 +32,7 @@
             "label": "Headers",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "headers"
             }
           },
@@ -40,7 +40,7 @@
             "label": "Query",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "query"
             }
           },
@@ -48,7 +48,7 @@
             "label": "Body",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "body"
             }
           },
@@ -56,7 +56,7 @@
             "label": "Timeout",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "timeout"
             }
           },
@@ -64,7 +64,7 @@
             "label": "Auth",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "auth"
             }
           },
@@ -72,7 +72,7 @@
             "label": "Response Type",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "responseType"
             }
           },
@@ -80,7 +80,7 @@
             "label": "Response Encoding",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "responseEncoding"
             }
           },
@@ -88,7 +88,7 @@
             "label": "Xsrf Cookie Name",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "xsrfCookieName"
             }
           },
@@ -96,7 +96,7 @@
             "label": "Xsrf Header Name",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "xsrfHeaderName"
             }
           },
@@ -104,7 +104,7 @@
             "label": "Max Content Length",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "maxContentLength"
             }
           },
@@ -112,7 +112,7 @@
             "label": "Max Body Length",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "maxBodyLength"
             }
           },
@@ -120,7 +120,7 @@
             "label": "Max Redirects",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "maxRedirects"
             }
           },
@@ -128,7 +128,7 @@
             "label": "Proxy",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "proxy"
             }
           },
@@ -136,7 +136,7 @@
             "label": "Decompress",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "decompress"
             }
           }

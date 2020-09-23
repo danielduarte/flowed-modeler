@@ -6,6 +6,7 @@ const isRunningMocha = process.argv[1] && process.argv[1].endsWith('mocha');
 describe('util - bpmnToFlowed', function() {
 
   const testCases = [
+    'no-processes',
     'empty',
     'simple-task',
     'if',

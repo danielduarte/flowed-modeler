@@ -16,7 +16,7 @@
             "label": "Server Url",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "serverUrl"
             },
             "choicesFn": "openApi.servers"
@@ -25,7 +25,7 @@
             "label": "Path",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "path"
             },
             "choicesFn": "openApi.paths"
@@ -34,7 +34,7 @@
             "label": "Method",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "method"
             },
             "choicesFn": "openApi.methods",
@@ -44,7 +44,7 @@
             "label": "Body",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "body"
             }
           },
@@ -52,7 +52,7 @@
             "label": "Path Params",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "pathParams"
             }
           },
@@ -60,7 +60,7 @@
             "label": "Query",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "query"
             }
           },
@@ -68,7 +68,7 @@
             "label": "Headers",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "headers"
             }
           },
@@ -76,7 +76,7 @@
             "label": "Cookies",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "cookies"
             }
           },
@@ -84,7 +84,7 @@
             "label": "Options",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "options"
             }
           }

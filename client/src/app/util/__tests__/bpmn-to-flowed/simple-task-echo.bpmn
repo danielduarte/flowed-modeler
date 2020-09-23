@@ -4,7 +4,7 @@
     <bpmn:task id="task1" name="Task 1" camunda:modelerTemplate="flowed::Echo">
       <bpmn:extensionElements>
         <flowed:params inout="">
-          <flowed:in>inputEcho</flowed:in>
+          <flowed:value name="in" type="input">inputEcho</flowed:value>
         </flowed:params>
         <flowed:results inout="">
           <flowed:out>outputEcho</flowed:out>

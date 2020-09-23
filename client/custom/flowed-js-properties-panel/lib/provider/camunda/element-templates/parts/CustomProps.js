@@ -1,6 +1,5 @@
 'use strict';
 
-const Config = require('../../../../../../../src/app/util/configs');
 const OpenApi = require('./OpenApi');
 var assign = require('lodash/assign');
 
@@ -32,7 +31,8 @@ var CAMUNDA_PROPERTY_TYPE = 'camunda:property',
     CAMUNDA_OUT_TYPE = 'camunda:out',
     CAMUNDA_IN_BUSINESS_KEY_TYPE = 'camunda:in:businessKey',
     CAMUNDA_EXECUTION_LISTENER_TYPE = 'camunda:executionListener',
-    CAMUNDA_FIELD = 'camunda:field';
+    CAMUNDA_FIELD = 'camunda:field',
+    FLOWED_PARAM_TYPE = 'flowed:param';
 
 // @todo To be used for manual values or transformations
 var escapeHTML = require('../../../../Utils').escapeHTML;
@@ -55,7 +55,8 @@ var EXTENSION_BINDING_TYPES = [
 
 var IO_BINDING_TYPES = [
   CAMUNDA_INPUT_PARAMETER_TYPE,
-  CAMUNDA_OUTPUT_PARAMETER_TYPE
+  CAMUNDA_OUTPUT_PARAMETER_TYPE,
+  FLOWED_PARAM_TYPE,
 ];
 
 var IN_OUT_BINDING_TYPES = [
@@ -68,12 +69,10 @@ const onSetPropertyFns = {
   'openApi.methods': (element, bpmnFactory) => {
     if (OpenApi.openApi.spec === null) { return []; }
     const bo = element.businessObject;
-    const path = bo.extensionElements.values[0].path;
-    const method = bo.extensionElements.values[0].method;
+    const path = getFlowedParam(element, { binding: { name: 'path' } });
+    const method = getFlowedParam(element, { binding: { name: 'method' } });
     if (typeof path === 'string' && typeof method === 'string' && OpenApi.openApi.spec.paths[path][method]) {
       const opDef = OpenApi.openApi.spec.paths[path][method];
-
-      console.log('--- openapi def ---', opDef);
 
       let inputOutput = findExtension(bo, 'camunda:InputOutput');
       if (typeof inputOutput === 'undefined') {
@@ -88,12 +87,15 @@ const onSetPropertyFns = {
         cookie: 'cookies',
       };
 
-      inputOutput.inputParameters = (opDef.parameters || []).map(
+      const newInputParameters = (opDef.parameters || []).map(
         param => elementHelper.createElement('camunda:InputParameter', {
           name: param.name,
           group: paramTypeToGroup[param.in],
         }, bo, bpmnFactory)
       );
+
+      // @todo check for duplicates
+      inputOutput.inputParameters.push(...newInputParameters);
     }
   },
 };
@@ -125,7 +127,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
     },
     'openApi.methods': (element) => {
       if (OpenApi.openApi.spec === null) { return []; }
-      const path = element.businessObject.extensionElements.values[0].path;
+      const path = getFlowedParam(element, { binding: { name: 'path' } });
       if (typeof path !== 'undefined') {
         const pathDef = OpenApi.openApi.spec.paths[path];
         if (typeof pathDef !== 'undefined') {
@@ -192,20 +194,12 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       const specOpts = typeof p.choicesFn === 'string' ? choicesFns[p.choicesFn](element) : [];
 
       entryOptions.selectOptions = [...fixedOpts, ...linkOpts, ...specOpts];
+      if (propertyType === 'Inputs') {
+        entryOptions.set = flowedParamSetter(id, p, bpmnFactory, redraw, linkOpts);
+        entryOptions.get = flowedParamGetter(id, p);
+      }
 
       entry = entryFactory.selectBox(entryOptions);
-
-      // @todo To be used for manual values or transformations
-      // const customVal = ['::flowed:jsonValue::', '::flowed:transform::'].includes(getPropertyValue(element, p));
-      // if (customVal) {
-      //   const canBeShown = !!entryOptions.show && typeof entryOptions.show === 'function';
-      //   const valueEntryHtml =
-      //     '<div class="cpp-field-wrapper" ' + (canBeShown ? 'data-show="isShown"' : '') + '>' +
-      //       '<div contenteditable="true" idX="camunda-' + escapeHTML(entryOptions.id) + '" ' + 'nameX="' + escapeHTML(entryOptions.modelProperty) + '" />' +
-      //     '</div>';
-      //
-      //   entry.html += valueEntryHtml;
-      // }
     }
 
     return entry;
@@ -287,6 +281,13 @@ function propertyGetter(name, property) {
   };
 }
 
+function flowedParamGetter(name, property) {
+  return function get(element) {
+    var value = getFlowedParam(element, property);
+    return objectWithKey(name, value);
+  };
+}
+
 /**
  * Return a setter that updates the given property.
  *
@@ -308,6 +309,18 @@ function propertySetter(name, property, bpmnFactory, redraw) {
     return setPropertyValue(element, property, value, bpmnFactory);
   };
 }
+
+function flowedParamSetter(name, property, bpmnFactory, redraw, linkOpts) {
+  return function set(element, values) {
+    var value = values[name];
+    setImmediate(() => {
+      typeof property.onSetPropertyFn === 'string' && onSetPropertyFns[property.onSetPropertyFn](element, bpmnFactory);
+      redraw();
+    });
+    return setFlowedParam(element, property, value, bpmnFactory, linkOpts);
+  };
+}
+
 
 /**
  * Return a validator that ensures the property is ok.
@@ -334,6 +347,45 @@ function propertyValidator(name, property, translate) {
 
 
 // get, set and validate helpers ///////////////////
+
+function getExtensionElements(element) {
+  const bo = getBusinessObject(element);
+  return bo.get('extensionElements');
+}
+
+function getFlowedParams(extensionElements) {
+  return (extensionElements.values || []).find(child => child.$type === 'flowed:Params');
+}
+
+function getFlowedParam(element, property) {
+  const extensionElements = getExtensionElements(element);
+  if (!extensionElements) {
+    return '';
+  }
+
+  const flowedParams = getFlowedParams(extensionElements);
+  if (!flowedParams) {
+    return '';
+  }
+
+  const paramName = property.binding.name;
+  const flowedParam = findForFlowedParam(flowedParams, paramName);
+  if (!flowedParam) {
+    return '';
+  }
+
+  if (flowedParam.type === 'value') {
+    return flowedParam.value ? flowedParam.value : '::flowed:jsonValue::';
+  }
+  if (flowedParam.type === 'transform') {
+    return '::flowed:transform::';
+  }
+  if (flowedParam.type === 'input') {
+    return flowedParam.value;
+  }
+
+  return undefined;
+}
 
 /**
  * Return the value of the specified property descriptor,
@@ -499,6 +551,139 @@ function getPropertyValue(element, property) {
 
 module.exports.getPropertyValue = getPropertyValue;
 
+function ensureExtensionElements(element, bpmnFactory, commands) {
+  const bo = getBusinessObject(element);
+
+  let extensionElements = bo.get('extensionElements');
+  if (!extensionElements) {
+    extensionElements = elementHelper.createElement('bpmn:ExtensionElements', null, element, bpmnFactory);
+    commands.push(cmdHelper.updateBusinessObject(element, bo, { extensionElements }));
+  }
+
+  return extensionElements;
+}
+
+function ensureFlowedParams(bo, extensionElements, bpmnFactory, commands) {
+  let flowedParams = (extensionElements.values || []).find(child => child.$type === 'flowed:Params');
+  if (!flowedParams) {
+    flowedParams = elementHelper.createElement('flowed:Params', null, extensionElements, bpmnFactory);
+    commands.push(cmdHelper.addElementsTolist(bo, extensionElements, 'values', [ flowedParams ]));
+  }
+
+  return flowedParams;
+}
+
+function ensureInputOutput(bo, extensionElements, bpmnFactory, commands) {
+  // @todo unify with similar function ensureFlowedParams
+  let inputOutput = (extensionElements.values || []).find(child => child.$type === 'camunda:InputOutput');
+  if (!inputOutput) {
+    inputOutput = elementHelper.createElement('camunda:InputOutput', null, extensionElements, bpmnFactory);
+    commands.push(cmdHelper.addElementsTolist(bo, extensionElements, 'values', [ inputOutput ]));
+  }
+
+  return inputOutput;
+}
+
+function createFlowParam(element, properties, flowedParams, bpmnFactory, commands) {
+  const bo = getBusinessObject(element);
+  const flowedParam = elementHelper.createElement('flowed:Value', properties, flowedParams, bpmnFactory);
+  commands.push(cmdHelper.addElementsTolist(bo, flowedParams, 'flowedParams', [ flowedParam ]));
+
+  return flowedParam;
+}
+
+function createInputParam(element, properties, inputOutput, bpmnFactory, commands) {
+  const bo = getBusinessObject(element);
+  const inputParam = elementHelper.createElement('camunda:InputParameter', properties, inputOutput, bpmnFactory);
+  commands.push(cmdHelper.addElementsTolist(bo, inputOutput, 'inputParameters', [ inputParam ]));
+
+  return inputParam;
+}
+
+function getFlowedValType(dropdownValue, linkOpts) {
+  if (dropdownValue === '::flowed:jsonValue::') {
+    return 'value';
+  }
+
+  if (dropdownValue === '::flowed:transform::') {
+    return 'transform';
+  }
+
+  if (dropdownValue !== '') {
+    const isInputLink = linkOpts.find(link => link.value === dropdownValue);
+    return isInputLink ? 'input': 'value';
+  }
+
+  return undefined;
+}
+
+function getFlowedValBody(dropdownValue) {
+  if (dropdownValue !== '::flowed:jsonValue::' && dropdownValue !== '::flowed:transform::') {
+    return dropdownValue;
+  }
+  return '';
+}
+
+function findForFlowedParam(flowedParams, name) {
+  return (flowedParams.flowedParams || []).find(flowedVal => flowedVal.name === name);
+}
+
+function findForInputParameter(inputOutput, name) {
+  return (inputOutput.inputParameters || []).find(inputParam => inputParam.name === name);
+}
+
+function generateInputParameterProps(flowedParamProps, bpmnFactory) {
+  const props = {
+    name: flowedParamProps.name,
+  };
+
+  if (flowedParamProps.type === 'value') {
+    props.definition = elementHelper.createElement('flowed:JsonValue', { value: flowedParamProps.value }, null, bpmnFactory);
+  } else if (flowedParamProps.type === 'transform') {
+    props.definition = elementHelper.createElement('flowed:Transform', { value: '{{this}}\n' }, null, bpmnFactory);
+  } if (flowedParamProps.type === 'input') {
+    props.definition = elementHelper.createElement('flowed:TaskInput', { value: flowedParamProps.value }, null, bpmnFactory);
+  }
+
+  return props;
+}
+
+function setFlowedParam(element, property, value, bpmnFactory, linkOpts) {
+  const commands = [];
+
+  // Get businessObject
+  const bo = getBusinessObject(element);
+
+  // Get or create bpmn:extensionElements
+  const extensionElements = ensureExtensionElements(element, bpmnFactory, commands);
+
+  // Get or create flowed:Params
+  const flowedParams = ensureFlowedParams(bo, extensionElements, bpmnFactory, commands);
+
+  // Get or create flowed:Value with the given name inside flowed:Params
+  const paramName = property.binding.name;
+  const valProps = { name: paramName, type: getFlowedValType(value, linkOpts), value: getFlowedValBody(value) };
+  const flowedParam = findForFlowedParam(flowedParams, paramName);
+  if (!flowedParam) {
+    createFlowParam(element, valProps, flowedParams, bpmnFactory, commands);
+  } else {
+    commands.push(cmdHelper.updateBusinessObject(element, flowedParam, valProps));
+  }
+
+  // Get or create camunda:inputOutput
+  const inputOutput = ensureInputOutput(bo, extensionElements, bpmnFactory, commands);
+
+  // Get or create camunda:InputParameter with the given name inside camunda:InputOutput
+  const inputProps = generateInputParameterProps(valProps, bpmnFactory);
+  const inputParam = findForInputParameter(inputOutput, paramName);
+  if (!inputParam) {
+    createInputParam(element, inputProps, inputOutput, bpmnFactory, commands);
+  } else {
+    commands.push(cmdHelper.updateBusinessObject(element, inputParam, inputProps));
+  }
+
+  return commands;
+}
 
 /**
  * Return an update operation that changes the diagram

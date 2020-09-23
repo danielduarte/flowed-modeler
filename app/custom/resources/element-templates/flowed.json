@@ -26,7 +26,7 @@
             "label": "In",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "in"
             }
           }
@@ -60,7 +60,7 @@
             "label": "Message",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "message"
             }
           }
@@ -82,7 +82,7 @@
             "label": "Result",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "result"
             }
           },
@@ -90,7 +90,7 @@
             "label": "Timeout (ms)",
             "type": "Inputs",
             "binding": {
-              "type": "property",
+              "type": "flowed:param",
               "name": "ms"
             }
           }

@@ -8,9 +8,9 @@
       <bpmn:task id="getProdInfo" name="Get Product Info" camunda:modelerTemplate="flowed::OpenApi">
         <bpmn:extensionElements>
           <flowed:params inout="">
-            <flowed:path>/products/{id}</flowed:path>
-            <flowed:method>get</flowed:method>
-            <flowed:serverUrl>http://localhost:3003</flowed:serverUrl>
+            <flowed:value type="value" name="serverUrl">http://localhost:3003</flowed:value>
+            <flowed:value type="value" name="path">/products/{id}</flowed:value>
+            <flowed:value type="value" name="method">get</flowed:value>
           </flowed:params>
           <flowed:results inout="">
             <flowed:body>prodInfo</flowed:body>
@@ -36,9 +36,9 @@
       <bpmn:task id="getProdPrice" name="Get Price" camunda:modelerTemplate="flowed::OpenApi">
         <bpmn:extensionElements>
           <flowed:params inout="">
-            <flowed:path>/prices/{id}</flowed:path>
-            <flowed:method>get</flowed:method>
-            <flowed:serverUrl>http://localhost:3003</flowed:serverUrl>
+            <flowed:value type="value" name="serverUrl">http://localhost:3003</flowed:value>
+            <flowed:value type="value" name="path">/prices/{id}</flowed:value>
+            <flowed:value type="value" name="method">get</flowed:value>
           </flowed:params>
           <flowed:results inout="">
             <flowed:body>prodPrice</flowed:body>
@@ -57,14 +57,14 @@
       <bpmn:task id="merge" name="Merge" camunda:modelerTemplate="flowed::Echo">
         <bpmn:extensionElements>
           <flowed:params inout="">
-            <flowed:in>::flowed:transform::</flowed:in>
+            <flowed:value type="transform" name="in" />
           </flowed:params>
           <flowed:results inout="">
             <flowed:out>product</flowed:out>
           </flowed:results>
           <camunda:inputOutput>
             <camunda:inputParameter name="in">
-              <flowed:transform>{{ Object.assign({}, prodInfo, prodPrice) }}</flowed:transform>
+              <flowed:transform>"{{ Object.assign({}, prodInfo, prodPrice) }}"</flowed:transform>
             </camunda:inputParameter>
           </camunda:inputOutput>
         </bpmn:extensionElements>

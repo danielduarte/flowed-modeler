@@ -38,7 +38,7 @@ function rule_definitions(node) {
 
   const processNodes = node.content.filter(child => child.name === 'bpmn:process');
   if (processNodes.length === 0) {
-    throw new Error('No process node found.');
+    warnings.push('No process nodes found.');
   }
 
   if (processNodes.length > 1) {
@@ -46,7 +46,7 @@ function rule_definitions(node) {
   }
 
   return {
-    tasks: rule_process(processNodes[0]),
+    tasks: processNodes.length > 0 ? rule_process(processNodes[0]) : {},
     warnings,
   };
 }
@@ -119,10 +119,18 @@ function rule_conditionExpression(node) {
 
 function rule_task_extensionElements_params(node) {
   validateNode(node, { type: 'element', name: 'flowed:params' });
-
   return node.content.reduce((acc, param) => {
-    const paramName = param.name.split(':')[1];
-    acc[paramName] = param.content[0].content;
+    const paramName = param.attrs.name;
+    if (param.content.length === 0) { return acc; }
+    let paramValue = param.content[0].content;
+    const paramType = param.attrs.type;
+    if (paramType === 'value') {
+      paramValue = { value: paramValue };
+    } else if (paramType === 'transform') {
+      paramValue = { transform: JSON.parse(paramValue) };
+    }
+
+    acc[paramName] = paramValue;
     return acc;
   }, {});
 }
@@ -133,18 +141,26 @@ function rule_task_extensionElements_inputOutput(node) {
   node.content.forEach(param => {
     if (param.content.length > 0) {
       let paramValue = param.content[0].content[0].content;
-
       const paramType = param.content[0].name;
-      if (paramType === 'flowed:jsonValue') {
-        paramValue = { value: paramValue };
-      } else if (paramType === 'flowed:transform') {
-        paramValue = { transform: paramValue };
-      }
 
       if (param.attrs.group) {
         params[param.attrs.group] = params[param.attrs.group] || { transform: {} };
-        params[param.attrs.group].transform[param.attrs.name] = `{{${paramValue}}}`;
+
+        if (paramType !== 'flowed:jsonValue' && paramType !== 'flowed:transform') {
+          paramValue = `{{${paramValue}}}`;
+        } else {
+          paramValue = JSON.parse(paramValue);
+        }
+
+        params[param.attrs.group].transform[param.attrs.name] = paramValue;
       } else {
+
+        if (paramType === 'flowed:jsonValue') {
+          paramValue = { value: paramValue };
+        } else if (paramType === 'flowed:transform') {
+          paramValue = { transform: JSON.parse(paramValue) };
+        }
+
         params[param.attrs.name] = paramValue;
       }
     }

@@ -8,8 +8,36 @@
   "associations": [],
   "types": [
     {
+      "name": "flowed:Value",
+      "properties": [
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "isBody": true,
+          "type": "String"
+        }
+      ],
+      "superClass": [
+        "Element"
+      ]
+    },
+    {
       "name": "flowed:Params",
       "properties": [
+        {
+          "name": "flowedParams",
+          "isMany": true,
+          "type": "flowed:Value"
+        },
         {
           "name": "in",
           "type": "String"

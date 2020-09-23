@@ -26,9 +26,9 @@
                             "name":"flowed::OpenApi",
                             "params":{
                               "pathParams":{"transform":{"id":"{{prodId}}"}},
-                              "path":"/products/{id}",
-                              "method":"get",
-                              "serverUrl":"http://localhost:3003"
+                              "path":{"value":"/products/{id}"},
+                              "method":{"value":"get"},
+                              "serverUrl":{"value":"http://localhost:3003"}
                             },
                             "results":{"body":"prodInfo"}
                           }
@@ -40,9 +40,9 @@
                             "name":"flowed::OpenApi",
                             "params":{
                               "pathParams":{"transform":{"id":"{{prodId}}"}},
-                              "path":"/prices/{id}",
-                              "method":"get",
-                              "serverUrl":"http://localhost:3003"
+                              "path":{"value":"/prices/{id}"},
+                              "method":{"value":"get"},
+                              "serverUrl":{"value":"http://localhost:3003"}
                             },
                             "results":{"body":"prodPrice"}
                           }

@@ -15,7 +15,8 @@ var PROPERTY_TYPE = 'property',
     CAMUNDA_OUT_TYPE = 'camunda:out',
     CAMUNDA_IN_BUSINESS_KEY_TYPE = 'camunda:in:businessKey',
     CAMUNDA_EXECUTION_LISTENER = 'camunda:executionListener',
-    CAMUNDA_FIELD = 'camunda:field';
+    CAMUNDA_FIELD = 'camunda:field',
+    FLOWED_PARAM_TYPE = 'flowed:param';
 
 var VALID_BINDING_TYPES = [
   PROPERTY_TYPE,
@@ -26,7 +27,8 @@ var VALID_BINDING_TYPES = [
   CAMUNDA_OUT_TYPE,
   CAMUNDA_IN_BUSINESS_KEY_TYPE,
   CAMUNDA_EXECUTION_LISTENER,
-  CAMUNDA_FIELD
+  CAMUNDA_FIELD,
+  FLOWED_PARAM_TYPE,
 ];
 
 
