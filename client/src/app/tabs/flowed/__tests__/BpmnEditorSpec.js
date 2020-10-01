@@ -30,11 +30,6 @@ import {
 import BpmnModeler from 'test/mocks/bpmn-js/Modeler';
 
 import diagramXML from './diagram.bpmn';
-import activitiXML from './activiti.bpmn';
-import activitiConvertedXML from './activitiConverted.bpmn';
-
-import applyDefaultTemplates from
-  '../modeler/features/apply-default-templates/applyDefaultTemplates';
 
 import {
   getCanvasEntries,
@@ -224,45 +219,6 @@ describe('<FlowedEditor>', function() {
       expect(xml).to.exist;
       expect(xml).to.eql(diagramXML);
     }
-  });
-
-
-  describe('#exportAs', function() {
-
-    // increase test time-outs, as exporting takes a
-    // long certain underpowered CI systems (AppVeyor, wink, wink)
-    this.timeout(5000);
-
-    let instance;
-
-    beforeEach(async function() {
-      instance = (await renderEditor(diagramXML)).instance;
-    });
-
-
-    it('svg', async function() {
-      const contents = await instance.exportAs('svg');
-
-      expect(contents).to.exist;
-      expect(contents).to.equal('<svg />');
-    });
-
-
-    it('png', async function() {
-      const contents = await instance.exportAs('png');
-
-      expect(contents).to.exist;
-      expect(contents).to.contain('data:image/png');
-    });
-
-
-    it('jpeg', async function() {
-      const contents = await instance.exportAs('jpeg');
-
-      expect(contents).to.exist;
-      expect(contents).to.contain('data:image/jpeg');
-    });
-
   });
 
 
@@ -567,113 +523,39 @@ describe('<FlowedEditor>', function() {
   });
 
 
-  describe('#handleNamespace', function() {
+  describe('#triggerAction', function() {
 
-    it('should replace namespace', function(done) {
+    it('should return value of editor action', async function() {
 
       // given
-      const onContentUpdated = sinon.spy();
-      const onAction = sinon.stub().resolves({
-        button: 'yes'
+      const editorActions = {
+        trigger(action, context) {
+          if (action === 'foo') {
+            return 'bar';
+          }
+        }
+      };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              editorActions
+            }
+          })
+        }
       });
 
       // when
-      renderEditor(activitiXML, {
-        onAction,
-        onContentUpdated,
-        onImport
-      });
-
-      // then
-      function onImport() {
-        try {
-          expect(onContentUpdated).to.be.calledOnce;
-          expect(onContentUpdated).to.be.calledWith(activitiConvertedXML);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
-    });
-
-
-    it('should not convert the diagram if declined', function(done) {
-
-      // given
-      const onContentUpdated = sinon.spy();
-      const onAction = sinon.stub().resolves('cancel');
+      const { instance } = await renderEditor(diagramXML, { cache });
 
       // when
-      renderEditor(activitiXML, {
-        onAction,
-        onContentUpdated,
-        onImport
-      });
+      const returnValue = instance.triggerAction('foo');
 
       // then
-      function onImport() {
-        try {
-          expect(onContentUpdated).to.not.have.been.called;
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
-    });
-
-
-    it('should not ask for permission if diagram does not have seeked namespace', function(done) {
-
-      // given
-      const onContentUpdated = sinon.spy();
-      const onAction = sinon.spy();
-
-      // when
-      renderEditor(diagramXML, {
-        onAction,
-        onContentUpdated,
-        onImport
-      });
-
-      // then
-      function onImport() {
-        try {
-          expect(onContentUpdated).to.not.have.been.called;
-          expect(onAction).to.not.have.been.calledWith('show-dialog');
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
-    });
-
-
-    it('should not fail import for broken diagrams', function(done) {
-
-      // given
-      const onContentUpdated = sinon.spy();
-      const onAction = sinon.stub().resolves('yes');
-
-      // when
-      renderEditor('broken-diagram', {
-        onAction,
-        onContentUpdated,
-        onImport
-      });
-
-      // then
-      function onImport() {
-        try {
-          expect(onContentUpdated).to.have.not.been.called;
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(returnValue).to.equal('bar');
     });
 
   });
@@ -830,75 +712,6 @@ describe('<FlowedEditor>', function() {
     afterEach(sinon.restore);
 
 
-    it('should import without errors and warnings', function(done) {
-
-      // when
-      renderEditor(diagramXML, {
-        onImport
-      });
-
-      // then
-      function onImport(error, warnings) {
-        try {
-          expect(error).to.not.exist;
-          expect(warnings).to.have.length(0);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
-    });
-
-
-    it('should import with warnings', function(done) {
-
-      // given
-      const warningInducingFakeXML = 'import-warnings';
-
-      // when
-      renderEditor(warningInducingFakeXML, {
-        onImport
-      });
-
-      // then
-      function onImport(error, warnings) {
-        try {
-          expect(error).to.not.exist;
-          expect(warnings).to.have.length(1);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
-    });
-
-
-    it('should import with error', function(done) {
-
-      // given
-      const errorInducingFakeXML = 'import-error';
-
-      // when
-      renderEditor(errorInducingFakeXML, {
-        onImport
-      });
-
-      // then
-      function onImport(error, warnings) {
-        try {
-          expect(error).to.exist;
-          expect(warnings).to.have.length(0);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
-    });
-
-
     it('should not import when provided xml is the same as the cached one', async function() {
 
       // given
@@ -974,224 +787,6 @@ describe('<FlowedEditor>', function() {
       // expect
       expect(getConfigSpy).to.be.called;
       expect(getConfigSpy).to.be.calledWith('bpmn.elementTemplates');
-    });
-
-
-    it('should not reload templates if it once succeeded', async function() {
-
-      // given
-      const getConfigSpy = sinon.spy(),
-            elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          modeler: new BpmnModeler({
-            modules: {
-              elementTemplatesLoader: elementTemplatesLoaderStub
-            }
-          })
-        }
-      });
-
-      // when
-      const { instance } = await renderEditor(diagramXML, {
-        cache,
-        getConfig: getConfigSpy
-      });
-
-      instance.componentWillUnmount();
-      await instance.componentDidMount();
-
-      // expect
-      expect(getConfigSpy).to.be.calledOnce;
-      expect(getConfigSpy).to.be.calledWith('bpmn.elementTemplates');
-      expect(elementTemplatesLoaderStub.setTemplates).to.be.calledOnce;
-    });
-
-
-    it('should retry loading templates on mount if they could not be loaded', async function() {
-
-      // given
-      const getConfigStub = sinon.stub(),
-            elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
-
-      getConfigStub.onFirstCall()
-        .rejects()
-        .onSecondCall()
-        .resolves();
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          modeler: new BpmnModeler({
-            modules: {
-              elementTemplatesLoader: elementTemplatesLoaderStub
-            }
-          })
-        }
-      });
-
-      // when
-      const { instance } = await renderEditor(diagramXML, {
-        cache,
-        getConfig: getConfigStub
-      });
-
-      instance.componentWillUnmount();
-      await instance.componentDidMount();
-
-      // expect
-      expect(getConfigStub).to.be.calledTwice;
-      expect(getConfigStub).to.be.calledWith('bpmn.elementTemplates');
-      expect(elementTemplatesLoaderStub.setTemplates).to.be.calledOnce;
-    });
-
-
-    it('should retry loading templates on mount if they could not be set', async function() {
-
-      // given
-      const getConfigSpy = sinon.spy(),
-            elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
-
-      elementTemplatesLoaderStub.setTemplates.onFirstCall()
-        .throwsException()
-        .onSecondCall()
-        .returns();
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          modeler: new BpmnModeler({
-            modules: {
-              elementTemplatesLoader: elementTemplatesLoaderStub
-            }
-          })
-        }
-      });
-
-      // when
-      const { instance } = await renderEditor(diagramXML, {
-        cache,
-        getConfig: getConfigSpy
-      });
-
-      instance.componentWillUnmount();
-      await instance.componentDidMount();
-
-      // expect
-      expect(getConfigSpy).to.be.calledTwice;
-      expect(getConfigSpy).to.be.calledWith('bpmn.elementTemplates');
-      expect(elementTemplatesLoaderStub.setTemplates).to.be.calledTwice;
-    });
-
-
-    it('should apply default templates to unsaved diagram', function(done) {
-
-      // given
-      const modeler = new BpmnModeler();
-
-      const invokeSpy = sinon.spy(modeler, 'invoke');
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          modeler
-        }
-      });
-
-      function onImport() {
-
-        try {
-          expect(invokeSpy).to.have.been.calledWith(applyDefaultTemplates);
-        } catch (error) {
-          return done(error);
-        }
-
-        done();
-      }
-
-      // when
-      renderEditor(diagramXML, {
-        isNew: true,
-        cache,
-        onImport
-      });
-    });
-
-
-    it('should NOT apply default templates to unsaved diagram twice', function(done) {
-
-      // given
-      const modeler = new BpmnModeler();
-
-      const invokeSpy = sinon.spy(modeler, 'invoke');
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          modeler,
-          defaultTemplatesApplied: true
-        }
-      });
-
-      function onImport() {
-
-        try {
-          expect(invokeSpy).not.to.have.been.called;
-        } catch (error) {
-          return done(error);
-        }
-
-        done();
-      }
-
-      // when
-      renderEditor(diagramXML, {
-        isNew: true,
-        cache,
-        onImport
-      });
-    });
-
-
-    it('should NOT apply default templates to saved diagram', function(done) {
-
-      // given
-      const modeler = new BpmnModeler();
-
-      const invokeSpy = sinon.spy(modeler, 'invoke');
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          modeler
-        }
-      });
-
-      function onImport() {
-
-        try {
-          expect(invokeSpy).not.to.have.been.called;
-        } catch (error) {
-          return done(error);
-        }
-
-        done();
-      }
-
-      // when
-      renderEditor(diagramXML, {
-        isNew: false,
-        cache,
-        onImport
-      });
     });
 
   });

@@ -14,6 +14,7 @@ import FlowedPlugin from './flowed-plugin';
 // import PrivacyPreferences from './privacy-preferences';  // Do not use privacy settings for now
 import UpdateChecks from './update-checks';
 import ErrorTracking from './error-tracking';
+import ElementTemplatesModal from './element-templates-modal';
 
 export default [
   CamundaPlugin,
@@ -21,5 +22,6 @@ export default [
 
   // PrivacyPreferences, // Do not use privacy settings for now
   UpdateChecks,
-  ErrorTracking
+  ErrorTracking,
+  ElementTemplatesModal
 ];

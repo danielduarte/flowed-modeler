@@ -16,7 +16,6 @@ import PropertiesContainer from '../PropertiesContainer';
 
 import { mount } from 'enzyme';
 
-/* global sinon */
 const { spy } = sinon;
 
 
@@ -101,23 +100,25 @@ describe('<PropertiesContainer>', function() {
 
 
 
-// helper /////
+// helpers //////////
+
 function createPropertiesContainer(props = {}, mountFn = mount) {
-  const componentProps = {
+  props = {
     layout: {
       propertiesPanel: {
         open: true,
-        width: 100
+        width: 350
       }
     },
     ...props,
   };
 
-  const wrapper = mountFn(<PropertiesContainer { ...componentProps } />);
+  const wrapper = mountFn(<PropertiesContainer { ...props } />);
+
   const instance = wrapper.find('PropertiesContainerWrapped').first().instance();
 
   return {
-    wrapper,
-    instance
+    instance,
+    wrapper
   };
 }
