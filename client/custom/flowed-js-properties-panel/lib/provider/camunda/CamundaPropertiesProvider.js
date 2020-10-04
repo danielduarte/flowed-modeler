@@ -377,10 +377,12 @@ function CamundaPropertiesProvider(
 
   PropertiesActivator.call(this, eventBus);
 
+  const self = this;
+
   this.getTabs = function(element) {
 
     const redraw = () => {
-      this._propertiesPanel.update(element, true);
+      self._propertiesPanel.update(element, true);
     };
 
     var generalTab = {
