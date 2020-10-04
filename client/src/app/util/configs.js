@@ -2,6 +2,7 @@ const CONFIG_ROOT_KEY = 'flowedConfig';
 
 const defaults = {
   'openapi.endpoint': 'http://localhost:3003/explorer/openapi.json',
+  'openapi.endpoints': [],
 };
 
 export const get = key => {

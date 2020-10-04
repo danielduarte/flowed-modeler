@@ -9,7 +9,6 @@
  */
 
 import React, { PureComponent } from 'react';
-import { omit } from 'min-dash';
 import AuthTypes from '../shared/AuthTypes';
 import DeploymentConfigModal from './DeploymentConfigModal';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
@@ -19,7 +18,7 @@ import { Button, Icon } from '../../../app/primitives';
 import * as Config from '../../../app/util/configs';
 
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
-const ENGINE_ENDPOINTS_CONFIG_KEY = 'openApiEndpoint';
+const ENGINE_ENDPOINTS_CONFIG_KEY = 'openApiEndpoints';
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 
 const DEFAULT_ENDPOINT = {
@@ -33,7 +32,7 @@ export default class DeploymentTool extends PureComponent {
   state = {
     modalState: null,
     activeTab: null
-  }
+  };
 
   validator = new DeploymentConfigValidator();
 
@@ -51,11 +50,11 @@ export default class DeploymentTool extends PureComponent {
 
   subscribeToFocusChange = (callback) => {
     this.focusChangeCallback = callback;
-  }
+  };
 
   unsubscribeFromFocusChange = () => {
     delete this.focusChangeCallback;
-  }
+  };
 
   saveTab = (tab) => {
     const {
@@ -63,7 +62,7 @@ export default class DeploymentTool extends PureComponent {
     } = this.props;
 
     return triggerAction('save-tab', { tab });
-  }
+  };
 
   deploy = (options = {}) => {
     const {
@@ -71,9 +70,9 @@ export default class DeploymentTool extends PureComponent {
     } = this.state;
 
     return this.deployTab(activeTab, options);
-  }
+  };
 
-  async deployTab(tab, options = {}) {
+  async deployTab(tab) {
 
     // (1) Cancel if file save cancelled
     if (!tab) {
@@ -98,7 +97,6 @@ export default class DeploymentTool extends PureComponent {
   }
 
   async saveProcessDefinition(tab, deployment) {
-
     if (!deployment || !deployment.deployedProcessDefinition) {
       return;
     }
@@ -115,17 +113,14 @@ export default class DeploymentTool extends PureComponent {
   }
 
   async saveConfiguration(tab, configuration) {
-
     const {
-      endpoint,
-      deployment
+      endpoints,
     } = configuration;
 
-    await this.saveEndpoint(endpoint);
+    await this.saveEndpoint(endpoints);
 
     const tabConfiguration = {
-      deployment,
-      endpointId: endpoint.id
+      endpoints,
     };
 
     await this.setTabConfiguration(tab, tabConfiguration);
@@ -134,7 +129,7 @@ export default class DeploymentTool extends PureComponent {
   }
 
   removeCredentials = async () => {
-  }
+  };
 
   saveCredential = async (credential) => {
     const savedConfiguration = await this.getSavedConfiguration(this.state.activeTab);
@@ -143,44 +138,20 @@ export default class DeploymentTool extends PureComponent {
       rememberCredentials: true,
       ...credential
     });
-  }
+  };
 
-  async saveEndpoint(endpoint) {
-
-    const {
-      rememberCredentials
-    } = endpoint;
-
-    const endpointToSave = rememberCredentials ? endpoint : omit(endpoint, ['username', 'password', 'token']);
-
-    const existingEndpoints = await this.getEndpoints();
-
-    const updatedEndpoints = addOrUpdateById(existingEndpoints, endpointToSave);
-
-    await this.setEndpoints(updatedEndpoints);
-
-    return endpointToSave;
+  async saveEndpoint(endpoints) {
+    await this.setEndpoints(endpoints);
   }
 
   async getSavedConfiguration(tab) {
-
     const tabConfig = await this.getTabConfiguration(tab);
 
     if (!tabConfig) {
       return undefined;
     }
 
-    const {
-      deployment,
-      endpointId
-    } = tabConfig;
-
-    const endpoints = await this.getEndpoints();
-
-    return {
-      deployment,
-      endpoint: endpoints.find(endpoint => endpoint.id === endpointId)
-    };
+    return tabConfig;
   }
 
   async getConfigurationFromUserInput(tab, providedConfiguration, uiOptions) {
@@ -217,7 +188,7 @@ export default class DeploymentTool extends PureComponent {
   }
 
   setEndpoints(endpoints) {
-    Config.set('openapi.endpoint', endpoints[0].url);
+    Config.set('openapi.endpoints', endpoints);
     return this.props.config.set(ENGINE_ENDPOINTS_CONFIG_KEY, endpoints);
   }
 
@@ -229,52 +200,23 @@ export default class DeploymentTool extends PureComponent {
     return this.props.config.setForFile(tab.file, DEPLOYMENT_DETAILS_CONFIG_KEY, configuration);
   }
 
-  /**
-   * Get endpoint to be used by the current tab.
-   *
-   * @return {EndpointConfig}
-   */
-  async getDefaultEndpoint(tab, providedEndpoint) {
-
-    let endpoint = {},
-        defaultUrl = DEFAULT_ENDPOINT.url;
+  async getDefaultEndpoints(tab, providedEndpoint) {
+    let endpoints = [];
 
     if (providedEndpoint) {
-      endpoint = providedEndpoint;
+      endpoints = providedEndpoint;
     } else {
-
-      const existingEndpoints = await this.getEndpoints();
-
-      if (existingEndpoints.length) {
-        endpoint = existingEndpoints[0];
-      }
+      endpoints = await this.getEndpoints();
     }
 
-    // since we have deprecated AuthTypes.none, we should correct existing
-    // configurations
-    if (endpoint.authType !== AuthTypes.basic && endpoint.authType !== AuthTypes.bearer) {
-      endpoint.authType = DEFAULT_ENDPOINT.authType;
-    }
-
-    return {
-      ...DEFAULT_ENDPOINT,
-      url: defaultUrl,
-      ...endpoint,
-      id: endpoint.id || generateId()
-    };
+    return endpoints;
   }
 
   async getDefaultConfiguration(tab, providedConfiguration = {}) {
-    const endpoint = await this.getDefaultEndpoint(tab, providedConfiguration.endpoint);
-
-    const deployment = providedConfiguration.deployment || {};
+    const endpoints = await this.getDefaultEndpoints(tab, providedConfiguration.endpoints);
 
     return {
-      endpoint,
-      deployment: {
-        name: withoutExtension(tab.name),
-        ...deployment
-      }
+      endpoints,
     };
   }
 
@@ -311,30 +253,4 @@ export default class DeploymentTool extends PureComponent {
     </React.Fragment>;
   }
 
-}
-
-
-
-// helpers //////////
-
-function withoutExtension(name) {
-  return name.replace(/\.[^.]+$/, '');
-}
-
-function addOrUpdateById(collection, element) {
-
-  const index = collection.findIndex(el => el.id === element.id);
-
-  if (index !== -1) {
-    return [
-      ...collection.slice(0, index),
-      element,
-      ...collection.slice(index + 1)
-    ];
-  }
-
-  return [
-    ...collection,
-    element
-  ];
 }

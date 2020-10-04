@@ -13,6 +13,15 @@
       "flowed:Params": {
         "properties": [
           {
+            "label": "API",
+            "type": "Inputs",
+            "binding": {
+              "type": "flowed:param",
+              "name": "api"
+            },
+            "choicesFn": "openApi.apis"
+          },
+          {
             "label": "Server Url",
             "type": "Inputs",
             "binding": {

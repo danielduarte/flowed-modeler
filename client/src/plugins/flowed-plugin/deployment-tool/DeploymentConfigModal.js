@@ -18,12 +18,25 @@ import { Formik, Field } from 'formik';
 
 export default class DeploymentConfigModal extends React.PureComponent {
 
+  state = {
+    endpoints: [],
+    selected: -1,
+    counter: 1,
+  };
+
   constructor(props) {
     super(props);
     this.valuesCache = { ...props.configuration };
   }
 
   componentDidMount = () => {
+    const endpoints = this.props.configuration.endpoints || [];
+
+    this.setState({
+      endpoints,
+      selected: endpoints.length >= 0 ? 0 : -1,
+    });
+
     const { subscribeToFocusChange, validator } = this.props;
     const { onAppFocusChange } = this;
 
@@ -87,21 +100,12 @@ export default class DeploymentConfigModal extends React.PureComponent {
   };
 
   onClose = (action = 'cancel', data = null) => {
-    this.props.onClose(action, data);
+    this.props.onClose(action, { endpoints: this.state.endpoints });
   };
 
-  onSubmit = async (values, { setFieldError }) => {
-    const { endpoint } = values;
-    const connectionValidation = await this.props.validator.validateConnection(endpoint);
-
-    if (!hasKeys(connectionValidation)) {
-      this.externalErrorCodeCache = null;
-      this.onClose('deploy', values);
-    } else {
-      const { details, code } = connectionValidation;
-      this.externalErrorCodeCache = code;
-      this.props.validator.onExternalError(values.endpoint.authType, details, code, setFieldError);
-    }
+  onSubmit = async (values) => {
+    this.externalErrorCodeCache = null;
+    this.onClose('deploy', values);
   };
 
   fieldError = (meta) => {
@@ -109,7 +113,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
   };
 
   setAuthType = (form) => {
-
     return event => {
       const authType = event.target.value;
       const { values, setValues } = form;
@@ -126,22 +129,46 @@ export default class DeploymentConfigModal extends React.PureComponent {
   };
 
   checkAuthStatus = (values) => {
-    this.props.validator.validateConnectionWithoutCredentials(values.endpoint.url);
+  };
+
+  handleAdd = () => {
+    const nroEndpoint = this.state.counter;
+    this.setState({
+      endpoints: [...this.state.endpoints, { name: `API #${nroEndpoint}`, url: ''}],
+      selected: this.state.endpoints.length,
+      counter: nroEndpoint + 1,
+    });
+  };
+
+  handleRemove = () => {
+    const newEndpoints = [...this.state.endpoints];
+    newEndpoints.splice(this.state.selected, 1);
+    this.setState({
+      endpoints: newEndpoints,
+      selected: newEndpoints.length > 0 ? 0 : -1,
+    });
+  };
+
+  handleChangeEndpoint = (event) => {
+    const newEndpoints = [ ...this.state.endpoints ];
+    const newEndpoint = { ...this.state.endpoints[this.state.selected] };
+
+    newEndpoint[event.target.name] = event.target.value;
+    newEndpoints[this.state.selected] = newEndpoint;
+
+    this.setState({endpoints: newEndpoints});
   };
 
   render() {
 
     const {
-      fieldError,
       onSubmit,
       onClose,
-      onAuthDetection,
       onSetFieldValueReceived
     } = this;
 
     const {
       configuration: values,
-      validator,
       title,
       intro,
       primaryAction
@@ -167,7 +194,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
             return (
               <form onSubmit={ form.handleSubmit }>
-
                 <Modal.Title>
                   {
                     title || 'Setup OpenApi'
@@ -183,32 +209,52 @@ export default class DeploymentConfigModal extends React.PureComponent {
                     )
                   }
 
-                  <fieldset>
-                    <legend>
-                      Endpoint Configuration
-                    </legend>
-
+                  <div className="modal-config-endpoints">
+                    <legend>Services Endpoints Configuration</legend>
                     <div className="fields">
-
-                      <Field
-                        name="endpoint.url"
-                        component={ TextInput }
-                        fieldError={ fieldError }
-                        validate={ (value) => {
-                          this.externalErrorCodeCache = null;
-                          return validator.validateEndpointURL(
-                            value,
-                            form.setFieldError,
-                            this.isOnBeforeSubmit,
-                            onAuthDetection,
-                            (code) => { this.externalErrorCodeCache = code; }
-                          );
-                        } }
-                        label="OpenApi Endpoint"
-                        hint="Should point to an OpenApi specification in JSON format."
-                      />
+                      <div className="left">
+                        <div>
+                          <button type="button" className="btn btn-secondary" onClick={this.handleAdd}>Add</button>
+                          <button type="button" className="btn btn-secondary" onClick={this.handleRemove}>Remove</button>
+                        </div>
+                        <select
+                          className="api-selector"
+                          size="10"
+                          value={ this.state.selected }
+                          onChange={ (event) => this.setState({ selected: event.target.value }) }
+                        >
+                          {this.state.endpoints.map(({ name, url }, index) => (
+                            <option
+                              key={ index }
+                              value={ index }
+                            >
+                              {name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {this.state.selected >= 0 && (<div className="right">
+                        <fieldset className="form-group">
+                          <Field
+                            name="name"
+                            component={ TextInput }
+                            label="Name"
+                            hint="A unique name for this API"
+                            value={ this.state.endpoints[this.state.selected] && this.state.endpoints[this.state.selected].name }
+                            onChange={ this.handleChangeEndpoint }
+                          />
+                          <Field
+                            name="url"
+                            component={ TextInput }
+                            label="Endpoint"
+                            hint="Should point to an OpenApi specification in JSON format."
+                            value={ this.state.endpoints[this.state.selected] && this.state.endpoints[this.state.selected].url }
+                            onChange={ this.handleChangeEndpoint }
+                          />
+                        </fieldset>
+                      </div>)}
                     </div>
-                  </fieldset>
+                  </div>
                 </Modal.Body>
 
                 <Modal.Footer>

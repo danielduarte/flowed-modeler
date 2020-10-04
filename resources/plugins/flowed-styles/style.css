@@ -152,3 +152,69 @@ input {
 #camunda-parameterType-transform {
   height: 12em;
 }
+
+
+/* OpenApi endpoints configuration modal */
+
+.modal-config-endpoints .fields {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  align-content: flex-start;
+}
+
+.modal-config-endpoints .left {
+  align-self: flex-start;
+  padding-right: 10px;
+  flex-basis: 30%;
+  border-right: 1px solid lightgray;
+}
+
+.modal-config-endpoints .left .api-selector {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 3px;
+}
+
+.modal-config-endpoints .left .btn + .btn {
+  margin-left: 5px;
+}
+
+.modal-config-endpoints .left .btn {
+  min-width: auto;
+  height: 27px;
+  font-size: 11px;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.modal-config-endpoints .right {
+  align-self: flex-start;
+  padding-left: 10px;
+  flex-basis: 50%;
+  flex-grow: 1;
+}
+
+.modal-config-endpoints .right .form-group {
+  padding: 0;
+  border: none;
+  margin: 17px 0 0;
+}
+
+.modal-config-endpoints .right .form-group input[type=text].form-control {
+  width: 100%;
+  /*margin-top: 5px;*/
+  margin-bottom: 20px;
+}
+
+.modal-config-endpoints select {
+
+}
+
+.modal-config-endpoints select > option {
+  font-size: 1.2em;
+  padding: 3px 6px;
+}
+
+/* END: OpenApi endpoints configuration modal */

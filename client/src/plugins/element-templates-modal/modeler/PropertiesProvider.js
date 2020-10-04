@@ -60,7 +60,7 @@ export default class PropertiesProvider extends CamundaPropertiesProvider {
 
     entries.splice(index + 1, 0, entryFactory.link({
       id: 'elementTemplatesModal',
-      label: this._translate('Select Element Template'),
+      label: this._translate('Select Resolver'),
       handleClick: openElementTemplatesModal
     }));
   }

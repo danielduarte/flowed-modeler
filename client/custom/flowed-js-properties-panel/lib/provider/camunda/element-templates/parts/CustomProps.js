@@ -24,6 +24,8 @@ var createCamundaProperty = require('../CreateHelper').createCamundaProperty,
     createCamundaInWithBusinessKey = require('../CreateHelper').createCamundaInWithBusinessKey,
     createCamundaFieldInjection = require('../CreateHelper').createCamundaFieldInjection;
 
+const Config = require('../../../../../../../src/app/util/configs');
+
 var CAMUNDA_PROPERTY_TYPE = 'camunda:property',
     CAMUNDA_INPUT_PARAMETER_TYPE = 'camunda:inputParameter',
     CAMUNDA_OUTPUT_PARAMETER_TYPE = 'camunda:outputParameter',
@@ -117,13 +119,17 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
   }
 
   const choicesFns = {
+    'openApi.apis': () => {
+      const apis = Config.get('openapi.endpoints') || [];
+      return apis.map(api => ({ name: api.name, value: api.name }));
+    },
     'openApi.servers': () => {
       if (OpenApi.openApi.spec === null) { return []; }
-      return (OpenApi.openApi.spec.servers || []).map(server => ({ "name": server.url, "value": server.url }));
+      return (OpenApi.openApi.spec.servers || []).map(server => ({ name: server.url, value: server.url }));
     },
     'openApi.paths': () => {
       if (OpenApi.openApi.spec === null) { return []; }
-      return (Object.keys(OpenApi.openApi.spec.paths) || []).map(path => ({ "name": path, "value": path }));
+      return (Object.keys(OpenApi.openApi.spec.paths) || []).map(path => ({ name: path, value: path }));
     },
     'openApi.methods': (element) => {
       if (OpenApi.openApi.spec === null) { return []; }
@@ -131,7 +137,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       if (typeof path !== 'undefined') {
         const pathDef = OpenApi.openApi.spec.paths[path];
         if (typeof pathDef !== 'undefined') {
-          return Object.entries(pathDef).map(([method, opDef]) => ({ "name": `${method.toUpperCase()} (${opDef.operationId})`, "value": method }));
+          return Object.entries(pathDef).map(([method, opDef]) => ({ name: `${method.toUpperCase()} (${opDef.operationId})`, value: method }));
         }
       }
       return [];
@@ -181,7 +187,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       OpenApi.requestSpec().then(refresh => { if (refresh) { redraw() } });
 
       const fixedOpts = [
-        { name: '-- Empty --'  , value: '' },
+        { name: ''  , value: '' },
         { name: '-- Value --'  , value: '::flowed:jsonValue::' },
         { name: '-- Transform --'  , value: '::flowed:transform::' },
       ];
@@ -235,7 +241,7 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       var customScopeFieldsGroup = {
         id: 'customField-' + idScopeName,
         label: scopeName.replace(/flowed:/g, ''),
-        entries: []
+        entries: [],
       };
 
       scope.properties.forEach(function(p, idx) {
