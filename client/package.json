@@ -23,7 +23,7 @@
     "classnames": "^2.2.6",
     "cmmn-js": "^0.20.0",
     "cmmn-js-properties-panel": "^0.8.3",
-    "codemirror": "^5.46.0",
+    "codemirror": "^5.58.2",
     "debug": "^4.1.1",
     "diagram-js": "^6.6.1",
     "diagram-js-direct-editing": "^1.6.1",
