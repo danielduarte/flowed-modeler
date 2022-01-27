@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "min-dash": "^3.0.0"
+    "min-dash": "^3.8.1"
   },
   "devDependencies": {
     "async": "^2.6.0",
