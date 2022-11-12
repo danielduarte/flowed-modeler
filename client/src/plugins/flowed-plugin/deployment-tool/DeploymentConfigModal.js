@@ -134,7 +134,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
   handleAdd = () => {
     const nroEndpoint = this.state.counter;
     this.setState({
-      endpoints: [...this.state.endpoints, { name: `API #${nroEndpoint}`, url: ''}],
+      endpoints: [...this.state.endpoints, { name: `API #${nroEndpoint}`, url: '' }],
       selected: this.state.endpoints.length,
       counter: nroEndpoint + 1,
     });
@@ -156,7 +156,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
     newEndpoint[event.target.name] = event.target.value;
     newEndpoints[this.state.selected] = newEndpoint;
 
-    this.setState({endpoints: newEndpoints});
+    this.setState({ endpoints: newEndpoints });
   };
 
   render() {
@@ -214,8 +214,8 @@ export default class DeploymentConfigModal extends React.PureComponent {
                     <div className="fields">
                       <div className="left">
                         <div>
-                          <button type="button" className="btn btn-secondary" onClick={this.handleAdd}>Add</button>
-                          <button type="button" className="btn btn-secondary" onClick={this.handleRemove}>Remove</button>
+                          <button type="button" className="btn btn-secondary" onClick={ this.handleAdd }>Add</button>
+                          <button type="button" className="btn btn-secondary" onClick={ this.handleRemove }>Remove</button>
                         </div>
                         <select
                           className="api-selector"

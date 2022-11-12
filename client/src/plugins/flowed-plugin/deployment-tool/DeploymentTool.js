@@ -9,10 +9,8 @@
  */
 
 import React, { PureComponent } from 'react';
-import AuthTypes from '../shared/AuthTypes';
 import DeploymentConfigModal from './DeploymentConfigModal';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
-import { generateId } from '../../../util';
 import { Fill } from '../../../app/slot-fill';
 import { Button, Icon } from '../../../app/primitives';
 import * as Config from '../../../app/util/configs';
@@ -21,11 +19,6 @@ const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'openApiEndpoints';
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 
-const DEFAULT_ENDPOINT = {
-  url: 'http://localhost:3000/openapi.json',
-  authType: AuthTypes.basic,
-  rememberCredentials: false
-};
 
 export default class DeploymentTool extends PureComponent {
 

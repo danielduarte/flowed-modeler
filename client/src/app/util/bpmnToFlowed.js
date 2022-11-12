@@ -1,5 +1,14 @@
 const { toJson } = require('xml2json-canonical');
 
+const parseJson = (jsonStr) => {
+  let parsed = null;
+  try {
+    parsed = JSON.parse(jsonStr);
+  } catch (err) {
+    throw new Error(`Invalid JSON: ${jsonStr}`);
+  }
+  return parsed;
+};
 
 module.exports = function bpmnToFlowed(xml, options) {
   const opts = {
@@ -127,7 +136,7 @@ function rule_task_extensionElements_params(node) {
     if (paramType === 'value') {
       paramValue = { value: paramValue };
     } else if (paramType === 'transform') {
-      paramValue = { transform: JSON.parse(paramValue) };
+      paramValue = { transform: parseJson(paramValue) };
     }
 
     acc[paramName] = paramValue;
@@ -149,7 +158,7 @@ function rule_task_extensionElements_inputOutput(node) {
         if (paramType !== 'flowed:jsonValue' && paramType !== 'flowed:transform') {
           paramValue = `{{${paramValue}}}`;
         } else {
-          paramValue = JSON.parse(paramValue);
+          paramValue = parseJson(paramValue);
         }
 
         params[param.attrs.group].transform[param.attrs.name] = paramValue;
@@ -158,7 +167,8 @@ function rule_task_extensionElements_inputOutput(node) {
         if (paramType === 'flowed:jsonValue') {
           paramValue = { value: paramValue };
         } else if (paramType === 'flowed:transform') {
-          paramValue = { transform: JSON.parse(paramValue) };
+          console.log('TO BE PARSED', paramValue);
+          paramValue = { transform: parseJson(paramValue) };
         }
 
         params[param.attrs.name] = paramValue;

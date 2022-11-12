@@ -3,41 +3,54 @@
 const Config = require('../../../../../../../src/app/util/configs');
 
 
-const openApi = {
+const defaultApi = {
   status: 'todo',
   spec: null,
   endpoint: null,
 };
 
-const getOpenApi = async () => {
-  const response = await fetch(Config.get('openapi.endpoint'));
+const apis = {};
+
+const downloadOpenApi = async apiName => {
+  const endpoints = Config.get('openapi.endpoints');
+  const currentEndpoint = endpoints.find(ep => ep.name === apiName);
+  const currentUrl = currentEndpoint && currentEndpoint.url;
+console.log('REQUESTING', currentUrl);
+  const response = await fetch(currentUrl);
   return await response.json();
 };
 
 // Invalidates the OpenApi spec cache if endpoint changed
-const checkNewEndpoint = () => {
-  const currentEndpoint = Config.get('openapi.endpoint');
-  if (currentEndpoint !== openApi.endpoint) {
-    openApi.endpoint = currentEndpoint;
-    openApi.status = 'todo';
-    openApi.spec = null;
+const checkNewEndpoint = apiName => {
+  const endpoints = Config.get('openapi.endpoints');
+  const currentEndpoint = endpoints.find(ep => ep.name === apiName);
+  const currentUrl = currentEndpoint && currentEndpoint.url;
+  if (currentUrl !== getOpenApi(apiName).endpoint) {
+    apis[apiName] = {
+      endpoint: currentUrl,
+      status: 'todo',
+      spec: null,
+    };
   }
 };
 
-const requestSpec = () => {
-  if (openApi.status === 'todo') {
-    openApi.status = 'pending';
-    return getOpenApi().then(openapi => {
-      openApi.status = 'done';
-      openApi.spec = openapi;
+const requestSpec = apiName => {
+  if (getOpenApi(apiName).status === 'todo') {
+    apis[apiName].status = 'pending';
+    return downloadOpenApi(apiName).then(openapi => {
+      apis[apiName].status = 'done';
+      apis[apiName].spec = openapi;
       return true;
     });
   }
   return Promise.resolve(false);
 };
 
+const getOpenApi = apiName => {
+  return apis.hasOwnProperty(apiName) ? apis[apiName] : defaultApi;
+};
+
 module.exports = {
-  openApi,
   getOpenApi,
   checkNewEndpoint,
   requestSpec,

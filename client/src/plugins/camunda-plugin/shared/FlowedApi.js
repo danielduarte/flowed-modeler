@@ -84,7 +84,7 @@ export default class FlowedApi {
   }
 
   async checkConnection() {
-    const response = await this.fetch('/ping');
+    const response = await this.fetch('/');
 
     if (response.ok) {
       return;

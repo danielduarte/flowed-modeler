@@ -69,12 +69,15 @@ var IN_OUT_BINDING_TYPES = [
 
 const onSetPropertyFns = {
   'openApi.methods': (element, bpmnFactory) => {
-    if (OpenApi.openApi.spec === null) { return []; }
+    const api = getFlowedParam(element, { binding: { name: 'api' } });
+    const spec = OpenApi.getOpenApi(api).spec;
+
+    if (spec === null) { return []; }
     const bo = element.businessObject;
     const path = getFlowedParam(element, { binding: { name: 'path' } });
     const method = getFlowedParam(element, { binding: { name: 'method' } });
-    if (typeof path === 'string' && typeof method === 'string' && OpenApi.openApi.spec.paths[path][method]) {
-      const opDef = OpenApi.openApi.spec.paths[path][method];
+    if (typeof path === 'string' && typeof method === 'string' && spec.paths[path][method]) {
+      const opDef = spec.paths[path][method];
 
       let inputOutput = findExtension(bo, 'camunda:InputOutput');
       if (typeof inputOutput === 'undefined') {
@@ -124,18 +127,25 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       return apis.map(api => ({ name: api.name, value: api.name }));
     },
     'openApi.servers': () => {
-      if (OpenApi.openApi.spec === null) { return []; }
-      return (OpenApi.openApi.spec.servers || []).map(server => ({ name: server.url, value: server.url }));
+      const api = getFlowedParam(element, { binding: { name: 'api' } });
+      console.log('GETTING API', api);
+      const spec = OpenApi.getOpenApi(api).spec;
+      if (spec === null) { return []; }
+      return (spec.servers || []).map(server => ({ name: server.url, value: server.url }));
     },
     'openApi.paths': () => {
-      if (OpenApi.openApi.spec === null) { return []; }
-      return (Object.keys(OpenApi.openApi.spec.paths) || []).map(path => ({ name: path, value: path }));
+      const api = getFlowedParam(element, { binding: { name: 'api' } });
+      const spec = OpenApi.getOpenApi(api).spec;
+      if (spec === null) { return []; }
+      return (Object.keys(spec.paths) || []).map(path => ({ name: path, value: path }));
     },
     'openApi.methods': (element) => {
-      if (OpenApi.openApi.spec === null) { return []; }
+      const api = getFlowedParam(element, { binding: { name: 'api' } });
+      const spec = OpenApi.getOpenApi(api).spec;
+      if (spec === null) { return []; }
       const path = getFlowedParam(element, { binding: { name: 'path' } });
       if (typeof path !== 'undefined') {
-        const pathDef = OpenApi.openApi.spec.paths[path];
+        const pathDef = spec.paths[path];
         if (typeof pathDef !== 'undefined') {
           return Object.entries(pathDef).map(([method, opDef]) => ({ name: `${method.toUpperCase()} (${opDef.operationId})`, value: method }));
         }
@@ -181,10 +191,11 @@ module.exports = function(element, elementTemplates, bpmnFactory, translate, red
       const bo = getBusinessObject(element);
       const links = bo[propertyType === 'Inputs' ? 'incoming' : 'outgoing'] || [];
 
-      // Invalidate OpenApi spec cache if endpoint changed
-      OpenApi.checkNewEndpoint();
+      const apiName = getFlowedParam(element, { binding: { name: 'api' } });
 
-      OpenApi.requestSpec().then(refresh => { if (refresh) { redraw() } });
+      // Invalidate OpenApi spec cache if endpoint changed
+      OpenApi.checkNewEndpoint(apiName);
+      OpenApi.requestSpec(apiName).then(refresh => { if (refresh) { redraw() } });
 
       const fixedOpts = [
         { name: ''  , value: '' },
